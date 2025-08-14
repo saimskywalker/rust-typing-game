@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Typing Speed Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">⚡ Typing Speed Game</h1>
+            <p class="subtitle">Built with Rust + WebAssembly</p>
+        </header>
+
+        <main class="game-area">
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-label">WPM</div>
+                    <div class="stat-value" id="wpm">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracy">100%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time</div>
+                    <div class="stat-value" id="timer">0s</div>
+                </div>
+            </div>
+
+            <div class="text-display">
+                <div class="sentence-container">
+                    <div id="sentence" class="sentence"></div>
+                    <div id="cursor" class="cursor"></div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <textarea 
+                    id="typing-input" 
+                    class="typing-input" 
+                    placeholder="Click here and start typing..."
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    autocorrect="off"
+                ></textarea>
+            </div>
+
+            <div class="controls">
+                <div class="timer-controls">
+                    <label for="timer-select" class="timer-label">Timer:</label>
+                    <select id="timer-select" class="timer-select">
+                        <option value="30">30 seconds</option>
+                        <option value="60" selected>60 seconds</option>
+                        <option value="120">2 minutes</option>
+                        <option value="180">3 minutes</option>
+                        <option value="300">5 minutes</option>
+                    </select>
+                </div>
+                <button id="new-sentence-btn" class="btn btn-primary">New Sentence</button>
+                <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                <button id="new-session-btn" class="btn btn-warning">New Session</button>
+            </div>
+
+            <div id="results" class="results hidden">
+                <div class="results-content">
+                    <h2 class="results-title" id="results-title">🎉 Great Job!</h2>
+                    <div class="results-stats">
+                        <div class="result-stat">
+                            <span class="result-label">Words Per Minute:</span>
+                            <span class="result-value" id="final-wpm">0</span>
+                        </div>
+                        <div class="result-stat">
+                            <span class="result-label">Accuracy:</span>
+                            <span class="result-value" id="final-accuracy">100%</span>
+                        </div>
+                        <div class="result-stat">
+                            <span class="result-label">Time:</span>
+                            <span class="result-value" id="final-time">0s</span>
+                        </div>
+                    </div>
+                    <div class="recommendation-section">
+                        <div class="recommendation-content" id="recommendation">
+                            Loading recommendation...
+                        </div>
+                    </div>
+                    <div class="auto-continue-info" id="auto-continue-info">
+                        <p>Next sentence loading in <span id="auto-continue-countdown">3</span> seconds...</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button id="continue-btn" class="btn btn-primary">Continue Now</button>
+                        <button id="play-again-btn" class="btn btn-success">New Game</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Challenge yourself and improve your typing skills!</p>
+        </footer>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading WebAssembly module...</p>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

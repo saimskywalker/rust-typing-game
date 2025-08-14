@@ -1,0 +1,24 @@
+{
+  "name": "rust-typing-game",
+  "version": "1.0.0",
+  "description": "A modern typing speed game built with Rust WebAssembly",
+  "main": "app.js",
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir pkg",
+    "dev": "wasm-pack build --target web --out-dir pkg && python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "clean": "rm -rf pkg target"
+  },
+  "keywords": [
+    "rust",
+    "webassembly",
+    "wasm",
+    "typing-game",
+    "speed-test"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}
