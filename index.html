@@ -3,18 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rust Typing Speed Game</title>
+    <title>Type Master - Test Your Typing Speed</title>
+    <meta name="description" content="Test your typing speed and accuracy with our interactive typing game. Built with Rust and WebAssembly for maximum performance.">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1 class="title">⚡ Typing Speed Game</h1>
-            <p class="subtitle">Built with Rust + WebAssembly</p>
-        </header>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+            <div class="welcome-header">
+                <div class="brand-logo">
+                    <span class="logo-icon">⚡</span>
+                    <h1 class="app-title">Type Master</h1>
+                </div>
+                <p class="app-subtitle">Test your typing speed and accuracy</p>
+                <p class="app-description">Discover your typing potential with our interactive speed test</p>
+            </div>
+            
+            <div class="welcome-form">
+                <div class="form-group">
+                    <label for="player-name" class="form-label">
+                        <span class="label-icon">👋</span>
+                        What's your name?
+                    </label>
+                    <input 
+                        type="text" 
+                        id="player-name" 
+                        class="form-input" 
+                        placeholder="Enter your name"
+                        maxlength="25"
+                        autocomplete="given-name"
+                        required
+                    >
+                    <div class="input-hint">We'll personalize your experience</div>
+                </div>
+                
+                <button id="continue-to-language" class="btn btn-primary btn-large" disabled>
+                    <span>Continue</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+            
+            <div class="welcome-footer">
+                <div class="features-preview">
+                    <div class="feature-item">
+                        <span class="feature-icon">🌍</span>
+                        <span>Multiple Languages</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⏱️</span>
+                        <span>Flexible Timing</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <span>Detailed Analytics</span>
+                    </div>
+                </div>
+                <p class="footer-text">Built with Rust + WebAssembly for maximum performance</p>
+            </div>
+        </div>
+    </div>
 
-        <main class="game-area">
+    <!-- Language Selection Screen -->
+    <div id="language-screen" class="screen hidden">
+        <div class="screen-container">
+            <div class="screen-header">
+                <h2>Hi <span id="player-name-display" class="highlight-name">[Name]</span>! 👋</h2>
+                <p class="screen-subtitle">Choose your typing language:</p>
+            </div>
+            
+            <div class="language-grid">
+                <button class="language-option" data-lang="en" data-name="English">
+                    <div class="language-flag">🇺🇸</div>
+                    <div class="language-name">English</div>
+                    <div class="language-sample">"The quick brown fox jumps..."</div>
+                </button>
+                
+                <button class="language-option" data-lang="es" data-name="Español">
+                    <div class="language-flag">🇪🇸</div>
+                    <div class="language-name">Español</div>
+                    <div class="language-sample">"El veloz murciélago hindú..."</div>
+                </button>
+                
+                <button class="language-option" data-lang="fr" data-name="Français">
+                    <div class="language-flag">🇫🇷</div>
+                    <div class="language-name">Français</div>
+                    <div class="language-sample">"Portez ce vieux whisky..."</div>
+                </button>
+            </div>
+            
+            <div class="screen-navigation">
+                <button id="back-to-welcome" class="btn btn-secondary">
+                    <span class="btn-arrow">←</span>
+                    <span>Back</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timer Selection Screen -->
+    <div id="timer-screen" class="screen hidden">
+        <div class="screen-container">
+            <div class="screen-header">
+                <h2>Almost ready, <span id="player-name-timer" class="highlight-name">[Name]</span>!</h2>
+                <p class="screen-subtitle">How long would you like to type?</p>
+            </div>
+            
+            <div class="timer-options-grid">
+                <button class="timer-option" data-duration="60">
+                    <div class="timer-icon">⏱️</div>
+                    <div class="timer-duration">1 Minute</div>
+                    <div class="timer-description">Quick sprint</div>
+                </button>
+                
+                <button class="timer-option recommended" data-duration="120">
+                    <div class="timer-icon">⏰</div>
+                    <div class="timer-duration">2 Minutes</div>
+                    <div class="timer-description">Balanced challenge</div>
+                    <div class="recommended-badge">Recommended</div>
+                </button>
+                
+                <button class="timer-option" data-duration="180">
+                    <div class="timer-icon">🕐</div>
+                    <div class="timer-duration">3 Minutes</div>
+                    <div class="timer-description">Extended practice</div>
+                </button>
+                
+                <button class="timer-option" data-duration="300">
+                    <div class="timer-icon">⏳</div>
+                    <div class="timer-duration">5 Minutes</div>
+                    <div class="timer-description">Endurance mode</div>
+                </button>
+            </div>
+            
+            <div class="screen-navigation">
+                <button id="back-to-language" class="btn btn-secondary">
+                    <span class="btn-arrow">←</span>
+                    <span>Back</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Countdown Screen -->
+    <div id="countdown-screen" class="screen hidden">
+        <div class="countdown-container">
+            <div class="countdown-header">
+                <h2>Get ready, <span id="player-name-countdown" class="highlight-name">[Name]</span>!</h2>
+                <p class="countdown-info">
+                    Typing in <strong id="selected-language-display">English</strong> 
+                    for <strong id="selected-duration-display">2 minutes</strong>
+                </p>
+            </div>
+            
+            <div class="countdown-circle-container">
+                <div class="countdown-circle">
+                    <div class="countdown-number" id="countdown-number">5</div>
+                </div>
+            </div>
+            
+            <div class="countdown-message">
+                <p id="countdown-text">Position your fingers on the home row...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="player-info">
+                    <span class="player-greeting">Good luck, <span id="player-name-game" class="highlight-name">[Name]</span>!</span>
+                    <div class="game-meta">
+                        <span id="game-language">English</span> • <span id="game-duration">2:00</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="stats-panel">
                 <div class="stat-card">
                     <div class="stat-label">WPM</div>
@@ -24,9 +190,9 @@
                     <div class="stat-label">Accuracy</div>
                     <div class="stat-value" id="accuracy">100%</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card timer-card">
                     <div class="stat-label">Time</div>
-                    <div class="stat-value" id="timer">0s</div>
+                    <div class="stat-value" id="timer">2:00</div>
                 </div>
             </div>
 
@@ -41,74 +207,110 @@
                 <textarea 
                     id="typing-input" 
                     class="typing-input" 
-                    placeholder="Click here and start typing..."
+                    placeholder="Start typing when ready..."
                     spellcheck="false"
                     autocomplete="off"
                     autocapitalize="off"
                     autocorrect="off"
                 ></textarea>
             </div>
-
-            <div class="controls">
-                <div class="timer-controls">
-                    <label for="timer-select" class="timer-label">Timer:</label>
-                    <select id="timer-select" class="timer-select">
-                        <option value="30">30 seconds</option>
-                        <option value="60" selected>60 seconds</option>
-                        <option value="120">2 minutes</option>
-                        <option value="180">3 minutes</option>
-                        <option value="300">5 minutes</option>
-                    </select>
-                </div>
-                <button id="new-sentence-btn" class="btn btn-primary">New Sentence</button>
-                <button id="reset-btn" class="btn btn-secondary">Reset</button>
-                <button id="new-session-btn" class="btn btn-warning">New Session</button>
-            </div>
-
-            <div id="results" class="results hidden">
-                <div class="results-content">
-                    <h2 class="results-title" id="results-title">🎉 Great Job!</h2>
-                    <div class="results-stats">
-                        <div class="result-stat">
-                            <span class="result-label">Words Per Minute:</span>
-                            <span class="result-value" id="final-wpm">0</span>
-                        </div>
-                        <div class="result-stat">
-                            <span class="result-label">Accuracy:</span>
-                            <span class="result-value" id="final-accuracy">100%</span>
-                        </div>
-                        <div class="result-stat">
-                            <span class="result-label">Time:</span>
-                            <span class="result-value" id="final-time">0s</span>
-                        </div>
-                    </div>
-                    <div class="recommendation-section">
-                        <div class="recommendation-content" id="recommendation">
-                            Loading recommendation...
-                        </div>
-                    </div>
-                    <div class="auto-continue-info" id="auto-continue-info">
-                        <p>Next sentence loading in <span id="auto-continue-countdown">3</span> seconds...</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill"></div>
-                        </div>
-                    </div>
-                    <div class="results-actions">
-                        <button id="continue-btn" class="btn btn-primary">Continue Now</button>
-                        <button id="play-again-btn" class="btn btn-success">New Game</button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer class="footer">
-            <p>Challenge yourself and improve your typing skills!</p>
-        </footer>
+        </div>
     </div>
 
-    <div id="loading" class="loading">
-        <div class="loading-spinner"></div>
-        <p>Loading WebAssembly module...</p>
+    <!-- Time's Up Screen -->
+    <div id="times-up-screen" class="screen hidden">
+        <div class="times-up-container">
+            <div class="times-up-animation">
+                <div class="clock-icon">⏰</div>
+                <h2 class="times-up-title">Time's Up!</h2>
+            </div>
+            
+            <div class="quick-stats">
+                <p>Great job, <span id="player-name-times-up" class="highlight-name">[Name]</span>!</p>
+                <p class="results-transition">Let's see how you did...</p>
+            </div>
+            
+            <div class="transition-animation">
+                <div class="loading-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen hidden">
+        <div class="results-container">
+            <div class="results-header">
+                <h2>Your Results, <span id="results-player-name" class="highlight-name">[Name]</span>! 🎉</h2>
+                <div class="results-meta">
+                    <span>Language: <strong id="results-language">English</strong></span>
+                    <span>Duration: <strong id="results-duration">2 minutes</strong></span>
+                    <span>Date: <strong id="results-date">Today</strong></span>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value" id="final-wpm">0</div>
+                    <div class="stat-label">Words Per Minute</div>
+                    <div class="stat-benchmark" id="wpm-benchmark">Average: 40 WPM</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value" id="final-accuracy">100%</div>
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-benchmark" id="accuracy-benchmark">Target: 95%</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="total-characters">0</div>
+                    <div class="stat-label">Characters Typed</div>
+                    <div class="stat-benchmark" id="characters-benchmark">Great effort!</div>
+                </div>
+            </div>
+            
+            <div class="performance-analysis">
+                <h3>📊 Performance Analysis</h3>
+                <div class="performance-level" id="performance-level">
+                    <div class="level-badge" id="level-badge">Intermediate</div>
+                    <div class="level-description" id="level-description">You're making great progress!</div>
+                </div>
+                <div class="recommendations" id="personalized-recommendations">
+                    <div class="recommendation-item">
+                        <div class="rec-icon">💡</div>
+                        <div class="rec-text">Focus on accuracy first, then gradually increase speed.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-actions">
+                <button id="play-again-btn" class="btn btn-primary">
+                    <span class="btn-icon">🔄</span>
+                    <span>Play Again</span>
+                </button>
+                <button id="change-settings-btn" class="btn btn-secondary">
+                    <span class="btn-icon">⚙️</span>
+                    <span>Change Settings</span>
+                </button>
+                <button id="share-results-btn" class="btn btn-success">
+                    <span class="btn-icon">📤</span>
+                    <span>Share Results</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen loading-overlay">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <h3>Loading WebAssembly...</h3>
+            <p>Preparing your typing experience</p>
+        </div>
     </div>
 
     <script type="module" src="app.js"></script>
