@@ -232,32 +232,85 @@ class TypingGameApp {
         this.updatePersonalization();
         
         const messages = [
-            "Position your fingers on the home row...",
-            "Take a deep breath and relax...", 
-            "Focus on accuracy over speed...",
-            "Remember: steady rhythm wins!",
-            "GO! Start typing!"
+            `Get ready, ${this.userData.name}! Position your fingers on the home row...`,
+            "Take a deep breath and relax your shoulders...", 
+            "Focus on accuracy over speed for better results...",
+            "Remember: steady rhythm beats rushed typing!",
+            "GO! Start typing and show your skills!"
         ];
         
         let count = 5;
         const countdownNumber = document.getElementById('countdown-number');
         const countdownText = document.getElementById('countdown-text');
+        const countdownCircle = document.querySelector('.countdown-circle');
+        const countdownContainer = document.querySelector('.countdown-container');
+        
+        // Reset any existing animations
+        if (countdownCircle) {
+            countdownCircle.classList.remove('pulse', 'final');
+        }
+        if (countdownNumber) {
+            countdownNumber.classList.remove('pop', 'shake');
+        }
+        if (countdownContainer) {
+            countdownContainer.classList.remove('go-animation');
+        }
         
         this.countdownInterval = setInterval(() => {
-            if (countdownNumber) countdownNumber.textContent = count;
-            if (countdownText) countdownText.textContent = messages[5 - count];
-            
-            // Add pulse animation
             if (countdownNumber) {
-                countdownNumber.style.animation = 'none';
+                countdownNumber.textContent = count;
+                
+                // Remove previous animation classes
+                countdownNumber.classList.remove('pop', 'shake');
+                countdownCircle?.classList.remove('pulse');
+                
+                // Add appropriate animations based on count
+                if (count > 0) {
+                    // Number pop animation
+                    setTimeout(() => {
+                        countdownNumber.classList.add('pop');
+                    }, 50);
+                    
+                    // Circle pulse animation
+                    setTimeout(() => {
+                        countdownCircle?.classList.add('pulse');
+                    }, 100);
+                    
+                    // Shake effect for final numbers
+                    if (count <= 2) {
+                        setTimeout(() => {
+                            countdownNumber.classList.add('shake');
+                        }, 300);
+                    }
+                }
+            }
+            
+            if (countdownText) {
+                // Clear existing message
+                countdownText.style.opacity = '0';
+                countdownText.style.transform = 'translateY(20px)';
+                
+                // Update message with fade in
                 setTimeout(() => {
-                    countdownNumber.style.animation = 'pulse 0.5s ease-out';
-                }, 10);
+                    countdownText.textContent = messages[5 - count];
+                    countdownText.style.opacity = '1';
+                    countdownText.style.transform = 'translateY(0)';
+                    countdownText.style.transition = 'all 0.3s ease-out';
+                }, 200);
             }
             
             if (count === 0) {
                 clearInterval(this.countdownInterval);
-                this.startTypingGame();
+                
+                // Special "GO!" animation
+                if (countdownContainer) {
+                    countdownContainer.classList.add('go-animation');
+                }
+                
+                // Start the game after the final animation
+                setTimeout(() => {
+                    this.startTypingGame();
+                }, 1000);
             }
             count--;
         }, 1000);

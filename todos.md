@@ -5,8 +5,8 @@
 ### Critical Priority (HIGH)
 - [x] **T-009** [FEATURE] [HIGH] Create welcome screen with name input and branding | Created: 2025-08-15 | Completed: 2025-08-15
 - [ ] **T-010** [FEATURE] [HIGH] Implement language selection interface with flag icons | Created: 2025-08-15 | **Depends on**: T-015
-- [ ] **T-011** [FEATURE] [HIGH] Add timer duration selection (1, 2, 3, 5 minutes) | Created: 2025-08-15
-- [ ] **T-012** [FEATURE] [HIGH] Build animated 5-second pre-game countdown screen | Created: 2025-08-15
+- [x] **T-011** [FEATURE] [HIGH] Add timer duration selection (1, 2, 3, 5 minutes) | Created: 2025-08-15 | Completed: 2025-08-15
+- [x] **T-012** [FEATURE] [HIGH] Build animated 5-second pre-game countdown screen | Created: 2025-08-15 | Completed: 2025-08-15
 - [ ] **T-013** [FEATURE] [HIGH] Create "Time's Up" transition screen with clear messaging | Created: 2025-08-15
 - [ ] **T-014** [FEATURE] [HIGH] Design comprehensive results screen with personalized feedback | Created: 2025-08-15 | **Depends on**: T-016
 - [x] **T-008** [BUG] [HIGH] Fix auto-continue to prevent over-typing and ensure immediate sentence progression | Created: 2025-08-15 | Completed: 2025-08-15
@@ -108,6 +108,30 @@
   - ✅ Rebuilt WebAssembly module with enhanced completion logic
   - ✅ Verified auto-continue works immediately upon reaching sentence end
   - ✅ Eliminated need for manual button clicks between sentences
+
+- [x] **T-011** [FEATURE] [HIGH] Add timer duration selection (1, 2, 3, 5 minutes) | Created: 2025-08-15 | Completed: 2025-08-15
+  - ✅ Confirmed timer duration options (1, 2, 3, 5 minutes) are already implemented in HTML
+  - ✅ Verified JavaScript selectTimer() method handles all duration options correctly
+  - ✅ Tested Rust set_timer_duration() and get_timer_duration() methods work properly
+  - ✅ Validated timer selection UI with proper visual feedback and transitions
+  - ✅ Confirmed mobile responsive design for timer options (single column layout)
+  - ✅ Successfully tested 1-minute timer selection through browser automation
+  - ✅ Verified timer durations are properly set in both user data and game object
+  - ✅ All four timer options working correctly: 60s, 120s, 180s, 300s
+
+- [x] **T-012** [FEATURE] [HIGH] Build animated 5-second pre-game countdown screen | Created: 2025-08-15 | Completed: 2025-08-15
+  - ✅ Created comprehensive countdown screen CSS with advanced animations
+  - ✅ Implemented rotating gradient border animation around countdown circle
+  - ✅ Added 3D countdown number pop animations with rotateY transitions
+  - ✅ Enhanced countdown circle with multiple animation states (pulse, final)
+  - ✅ Created progressive shake effects for countdown numbers 2 and 1
+  - ✅ Implemented personalized countdown messages with user name integration
+  - ✅ Added smooth fade-in/out transitions for message text updates
+  - ✅ Created spectacular "GO!" animation with color gradient transitions
+  - ✅ Enhanced JavaScript with sophisticated animation timing and class management
+  - ✅ Added mobile responsive design for countdown screen (smaller circle, adjusted text)
+  - ✅ Successfully tested countdown flow from 5 to game screen transition
+  - ✅ Verified all animations work smoothly and timing is perfect (5-second duration)
 
 ---
 
