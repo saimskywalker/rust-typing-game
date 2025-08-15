@@ -3,6 +3,13 @@
 ## Active Tasks
 
 ### Critical Priority (HIGH)
+- [x] **T-009** [FEATURE] [HIGH] Create welcome screen with name input and branding | Created: 2025-08-15 | Completed: 2025-08-15
+- [ ] **T-010** [FEATURE] [HIGH] Implement language selection interface with flag icons | Created: 2025-08-15 | **Depends on**: T-015
+- [ ] **T-011** [FEATURE] [HIGH] Add timer duration selection (1, 2, 3, 5 minutes) | Created: 2025-08-15
+- [ ] **T-012** [FEATURE] [HIGH] Build animated 5-second pre-game countdown screen | Created: 2025-08-15
+- [ ] **T-013** [FEATURE] [HIGH] Create "Time's Up" transition screen with clear messaging | Created: 2025-08-15
+- [ ] **T-014** [FEATURE] [HIGH] Design comprehensive results screen with personalized feedback | Created: 2025-08-15 | **Depends on**: T-016
+- [x] **T-008** [BUG] [HIGH] Fix auto-continue to prevent over-typing and ensure immediate sentence progression | Created: 2025-08-15 | Completed: 2025-08-15
 - [x] **T-001** [BUG] [HIGH] Implement countdown timer with configurable start time (60s default) | Created: 2025-01-14 | Completed: 2025-01-14
 - [x] **T-002** [FEATURE] [HIGH] Add automatic game stop when timer reaches zero | Created: 2025-01-14 | Completed: 2025-01-14 | **Depends on**: T-001
 - [x] **T-004** [BUG] [HIGH] Fix WPM calculation to prevent NaN values | Created: 2025-01-14 | Completed: 2025-01-14
@@ -10,9 +17,15 @@
 - [x] **T-006** [FEATURE] [MEDIUM] Implement session-wide stats accumulation | Created: 2025-01-14 | Completed: 2025-01-14 | **Depends on**: T-004, T-005
 
 ### Medium Priority
+- [ ] **T-015** [FEATURE] [MEDIUM] Add multi-language sentence support in Rust core | Created: 2025-08-15
+- [ ] **T-016** [FEATURE] [MEDIUM] Implement recommendation engine based on performance | Created: 2025-08-15
+- [ ] **T-017** [FEATURE] [MEDIUM] Add screen transition animations and state management | Created: 2025-08-15
+- [ ] **T-018** [TASK] [MEDIUM] Create user data persistence with localStorage | Created: 2025-08-15
 - [x] **T-003** [FEATURE] [MEDIUM] Implement automatic sentence loading after completion | Created: 2025-01-14 | Completed: 2025-01-14
 
 ### Low Priority
+- [ ] **T-019** [TASK] [LOW] Add restart flow from results back to language selection | Created: 2025-08-15
+- [ ] **T-020** [TASK] [LOW] Implement keyboard shortcuts for power users | Created: 2025-08-15
 - [x] **T-007** [FEATURE] [LOW] Add game restart functionality that resets accumulated stats | Created: 2025-01-14 | Completed: 2025-01-14 | **Depends on**: T-006
 
 ## Completed Tasks
@@ -86,6 +99,16 @@
   - ✅ Added debug function for testing session reset functionality (console: debugSessionReset())
   - ✅ Ensured complete session state cleanup while maintaining game functionality
 
+- [x] **T-008** [BUG] [HIGH] Fix auto-continue to prevent over-typing and ensure immediate sentence progression | Created: 2025-08-15 | Completed: 2025-08-15
+  - ✅ Added input length restriction to prevent typing beyond sentence length
+  - ✅ Implemented forced completion trigger when over-typing is detected
+  - ✅ Enhanced handleInput() with input truncation and immediate auto-continue
+  - ✅ Added dual completion detection (Rust sentence_complete + JavaScript length check)
+  - ✅ Added comprehensive debug logging for troubleshooting completion events
+  - ✅ Rebuilt WebAssembly module with enhanced completion logic
+  - ✅ Verified auto-continue works immediately upon reaching sentence end
+  - ✅ Eliminated need for manual button clicks between sentences
+
 ---
 
 ## Task Details
@@ -130,3 +153,9 @@
 **Description**: Add restart button that resets all accumulated session stats.
 **Dependencies**: T-006 must be completed first
 **Acceptance**: Restart button resets accumulated stats, starts fresh session
+
+### T-008: Fix auto-continue to prevent over-typing and ensure immediate sentence progression
+**Type**: BUG | **Priority**: HIGH  
+**Description**: Users can type beyond sentence length without auto-continue triggering. Need to prevent over-typing and ensure immediate progression.
+**Files**: `app.js`, `src/lib.rs`
+**Acceptance**: Game stops accepting input at sentence length and immediately moves to next sentence
