@@ -88,6 +88,16 @@ rust-typing-game/
 - `npm run preview` - Preview production build
 - `wasm-pack build` - Compile Rust to WebAssembly
 
+### Technology Stack
+
+| Language | Purpose |
+|----------|---------|
+| **Rust** | Core game logic, state management, WPM calculations, timer handling |
+| **JavaScript** | DOM manipulation, UI events, user interactions |
+| **HTML** | Structure and content layout |
+| **CSS** | Glass morphism styling, animations, responsive design |
+| **Makefile** | Build automation and deployment scripts |
+
 ### Key Technologies
 
 - **Frontend**: HTML5, CSS3 (Glass Morphism), Vanilla JavaScript
