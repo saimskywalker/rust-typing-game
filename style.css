@@ -322,7 +322,7 @@ input[type="text"]::placeholder, textarea::placeholder {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
-    padding: 0 1rem;
+    padding: 1rem 1rem 0 1rem;
 }
 
 .option {
@@ -379,18 +379,20 @@ input[type="text"]::placeholder, textarea::placeholder {
 }
 
 .option.recommended::after {
-    content: '⭐ Pilihan Terbaik!';
+    content: '⭐ Recommended';
     position: absolute;
-    top: -12px;
-    right: -12px;
+    top: -8px;
+    right: -8px;
     background: linear-gradient(135deg, var(--sunset-orange), var(--coral-pink));
     color: white;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     border-radius: var(--radius-full);
     box-shadow: var(--shadow-sm);
     animation: pulse 2s ease-in-out infinite;
+    white-space: nowrap;
+    z-index: 10;
 }
 
 @keyframes pulse {
