@@ -6,9 +6,15 @@ let gameStartTime = null;
 
 async function initializeApp() {
     try {
+        console.log('Starting WASM initialization...');
         await init();
+        console.log('WASM initialized successfully');
+        
         app = new TypingApp();
+        console.log('TypingApp created');
+        
         app.initialize();
+        console.log('TypingApp initialized');
         
         // Initialize monitoring
         if (window.typingGameMonitor) {
@@ -22,14 +28,37 @@ async function initializeApp() {
         console.log('Rust TypingApp loaded successfully');
         setupEventListeners();
         setupMonitoringIntegration();
+        
+        // Enable the continue button if there's text in the name field
+        const nameInput = document.getElementById('player-name');
+        const continueBtn = document.getElementById('continue-to-language');
+        if (nameInput && nameInput.value.trim()) {
+            const isValid = app.set_user_name(nameInput.value.trim());
+            if (continueBtn) continueBtn.disabled = !isValid;
+        }
+        
     } catch (error) {
         console.error('Failed to initialize Rust app:', error);
+        console.error('Error details:', error.stack);
         if (monitor) {
             monitor.trackError('app_initialization_failed', {
                 error: error.message
             });
         }
-        showError('Failed to load the typing game. Please refresh the page.');
+        showError('Failed to load the typing game. Please check console and refresh the page.');
+        
+        // Show a fallback message
+        const welcomeScreen = document.getElementById('welcome-screen');
+        if (welcomeScreen) {
+            welcomeScreen.innerHTML = `
+                <div class="container">
+                    <h1>🚫 Loading Error</h1>
+                    <p>Failed to load the typing game. Please refresh the page.</p>
+                    <p>Error: ${error.message}</p>
+                    <button onclick="location.reload()" class="btn btn-primary">🔄 Refresh Page</button>
+                </div>
+            `;
+        }
     }
 }
 
