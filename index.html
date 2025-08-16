@@ -241,64 +241,191 @@
     <!-- Results Screen -->
     <div id="results-screen" class="screen hidden">
         <div class="results-container">
+            <!-- Results Header with Achievement Badge -->
             <div class="results-header">
-                <h2>Your Results, <span id="results-player-name" class="highlight-name">[Name]</span>! 🎉</h2>
+                <div class="results-celebration">
+                    <div class="achievement-badge" id="achievement-badge">
+                        <div class="badge-icon" id="achievement-icon">🎯</div>
+                        <div class="badge-text" id="achievement-text">Well Done!</div>
+                    </div>
+                    <h2>Your Results, <span id="results-player-name" class="highlight-name">[Name]</span>! 🎉</h2>
+                </div>
                 <div class="results-meta">
-                    <span>Language: <strong id="results-language">English</strong></span>
-                    <span>Duration: <strong id="results-duration">2 minutes</strong></span>
-                    <span>Date: <strong id="results-date">Today</strong></span>
+                    <div class="meta-item">
+                        <span class="meta-label">Language:</span>
+                        <strong id="results-language">English</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Duration:</span>
+                        <strong id="results-duration">2 minutes</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Date:</span>
+                        <strong id="results-date">Today</strong>
+                    </div>
                 </div>
             </div>
             
-            <div class="stats-grid">
-                <div class="stat-card primary">
-                    <div class="stat-icon">⚡</div>
-                    <div class="stat-value" id="final-wpm">0</div>
-                    <div class="stat-label">Words Per Minute</div>
-                    <div class="stat-benchmark" id="wpm-benchmark">Average: 40 WPM</div>
+            <!-- Enhanced Stats Grid with Progress Bars -->
+            <div class="stats-section">
+                <h3 class="section-title">📊 Your Performance</h3>
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-header">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-label">Words Per Minute</div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="final-wpm">0</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="wpm-progress"></div>
+                                </div>
+                                <div class="stat-benchmark" id="wpm-benchmark">Average: 40 WPM</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-label">Accuracy</div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="final-accuracy">100%</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="accuracy-progress"></div>
+                                </div>
+                                <div class="stat-benchmark" id="accuracy-benchmark">Target: 95%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-label">Characters Typed</div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-characters">0</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="characters-progress"></div>
+                                </div>
+                                <div class="stat-benchmark" id="characters-benchmark">Great effort!</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">🎯</div>
-                    <div class="stat-value" id="final-accuracy">100%</div>
-                    <div class="stat-label">Accuracy</div>
-                    <div class="stat-benchmark" id="accuracy-benchmark">Target: 95%</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">📝</div>
-                    <div class="stat-value" id="total-characters">0</div>
-                    <div class="stat-label">Characters Typed</div>
-                    <div class="stat-benchmark" id="characters-benchmark">Great effort!</div>
+            </div>
+
+            <!-- Detailed Session Statistics -->
+            <div class="session-stats">
+                <h3 class="section-title">📈 Session Details</h3>
+                <div class="session-grid">
+                    <div class="session-stat">
+                        <div class="session-icon">⏱️</div>
+                        <div class="session-info">
+                            <div class="session-value" id="session-time-spent">0m 0s</div>
+                            <div class="session-label">Active Typing Time</div>
+                        </div>
+                    </div>
+                    <div class="session-stat">
+                        <div class="session-icon">📄</div>
+                        <div class="session-info">
+                            <div class="session-value" id="sentences-completed">0</div>
+                            <div class="session-label">Sentences Completed</div>
+                        </div>
+                    </div>
+                    <div class="session-stat">
+                        <div class="session-icon">✅</div>
+                        <div class="session-info">
+                            <div class="session-value" id="correct-characters">0</div>
+                            <div class="session-label">Correct Characters</div>
+                        </div>
+                    </div>
+                    <div class="session-stat">
+                        <div class="session-icon">⚡</div>
+                        <div class="session-info">
+                            <div class="session-value" id="peak-wpm">0</div>
+                            <div class="session-label">Peak WPM</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
+            <!-- Performance Analysis (Enhanced with Recommendation Engine) -->
             <div class="performance-analysis">
-                <h3>📊 Performance Analysis</h3>
+                <h3 class="section-title">🧠 Performance Analysis</h3>
                 <div class="performance-level" id="performance-level">
                     <div class="level-badge" id="level-badge">Intermediate</div>
                     <div class="level-description" id="level-description">You're making great progress!</div>
                 </div>
                 <div class="recommendations" id="personalized-recommendations">
-                    <div class="recommendation-item">
-                        <div class="rec-icon">💡</div>
-                        <div class="rec-text">Focus on accuracy first, then gradually increase speed.</div>
+                    <!-- Enhanced recommendations will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Progress Comparison Chart -->
+            <div class="progress-comparison">
+                <h3 class="section-title">📊 How You Compare</h3>
+                <div class="comparison-chart">
+                    <div class="comparison-item">
+                        <div class="comparison-label">Beginner (0-25 WPM)</div>
+                        <div class="comparison-bar">
+                            <div class="comparison-fill beginner"></div>
+                        </div>
+                        <div class="comparison-percentage">25%</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Average (25-40 WPM)</div>
+                        <div class="comparison-bar">
+                            <div class="comparison-fill average"></div>
+                        </div>
+                        <div class="comparison-percentage">40%</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Good (40-60 WPM)</div>
+                        <div class="comparison-bar">
+                            <div class="comparison-fill good"></div>
+                        </div>
+                        <div class="comparison-percentage">20%</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Expert (60+ WPM)</div>
+                        <div class="comparison-bar">
+                            <div class="comparison-fill expert"></div>
+                        </div>
+                        <div class="comparison-percentage">15%</div>
+                    </div>
+                    <div class="user-position" id="user-position">
+                        <div class="position-marker">📍 You</div>
                     </div>
                 </div>
             </div>
             
+            <!-- Action Buttons -->
             <div class="results-actions">
                 <button id="play-again-btn" class="btn btn-primary">
                     <span class="btn-icon">🔄</span>
                     <span>Play Again</span>
+                    <div class="btn-subtitle">Same settings</div>
                 </button>
                 <button id="change-settings-btn" class="btn btn-secondary">
                     <span class="btn-icon">⚙️</span>
-                    <span>Change Settings</span>
+                    <span>Change Language/Timer</span>
+                    <div class="btn-subtitle">Modify settings</div>
+                </button>
+                <button id="new-session-btn" class="btn btn-info">
+                    <span class="btn-icon">🆕</span>
+                    <span>New Session</span>
+                    <div class="btn-subtitle">Start fresh</div>
                 </button>
                 <button id="share-results-btn" class="btn btn-success">
                     <span class="btn-icon">📤</span>
                     <span>Share Results</span>
+                    <div class="btn-subtitle">Tell friends</div>
                 </button>
             </div>
         </div>

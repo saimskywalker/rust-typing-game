@@ -4,8 +4,9 @@ class TypingGameApp {
     constructor() {
         // Game state
         this.game = null;
-        this.currentScreen = 'welcome-screen';
+        this.currentScreen = 'loading-screen';
         this.gameState = 'setup'; // setup, countdown, playing, finished
+        this.isTransitioning = false;
         
         // User data
         this.userData = {
@@ -40,7 +41,7 @@ class TypingGameApp {
             
             // Initialize welcome screen
             setTimeout(() => {
-                this.showScreen('welcome-screen');
+                this.showScreen('welcome-screen', 'fade');
                 this.focusNameInput();
             }, 1000);
             
@@ -75,7 +76,7 @@ class TypingGameApp {
 
             const backToWelcome = document.getElementById('back-to-welcome');
             if (backToWelcome) {
-                backToWelcome.addEventListener('click', () => this.showScreen('welcome-screen'));
+                backToWelcome.addEventListener('click', () => this.showScreen('welcome-screen', 'slide', 'backward'));
             }
 
             // Timer selection
@@ -86,7 +87,7 @@ class TypingGameApp {
 
             const backToLanguage = document.getElementById('back-to-language');
             if (backToLanguage) {
-                backToLanguage.addEventListener('click', () => this.showScreen('language-screen'));
+                backToLanguage.addEventListener('click', () => this.showScreen('language-screen', 'slide', 'backward'));
             }
 
             // Game screen
@@ -100,13 +101,17 @@ class TypingGameApp {
             // Results screen
             const playAgainBtn = document.getElementById('play-again-btn');
             const changeSettingsBtn = document.getElementById('change-settings-btn');
+            const newSessionBtn = document.getElementById('new-session-btn');
             const shareResultsBtn = document.getElementById('share-results-btn');
 
             if (playAgainBtn) {
                 playAgainBtn.addEventListener('click', () => this.restartGame());
             }
             if (changeSettingsBtn) {
-                changeSettingsBtn.addEventListener('click', () => this.showScreen('welcome-screen'));
+                changeSettingsBtn.addEventListener('click', () => this.changeSettings());
+            }
+            if (newSessionBtn) {
+                newSessionBtn.addEventListener('click', () => this.restartFromBeginning());
             }
             if (shareResultsBtn) {
                 shareResultsBtn.addEventListener('click', () => this.shareResults());
@@ -114,21 +119,189 @@ class TypingGameApp {
         });
     }
 
-    // Screen Management
-    showScreen(screenId) {
-        // Hide all screens
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.remove('active');
-            screen.classList.add('hidden');
+    // Enhanced Screen Management with Animations
+    showScreen(screenId, transitionType = 'fade', direction = 'forward') {
+        // Prevent multiple simultaneous transitions
+        if (this.isTransitioning) {
+            console.log('Transition already in progress, queuing...');
+            setTimeout(() => this.showScreen(screenId, transitionType, direction), 100);
+            return;
+        }
+
+        const currentScreenElement = document.getElementById(this.currentScreen);
+        const targetScreen = document.getElementById(screenId);
+        
+        if (!targetScreen) {
+            console.warn(`Screen "${screenId}" not found`);
+            return;
+        }
+
+        // If same screen, do nothing
+        if (this.currentScreen === screenId) return;
+
+        // Set transition state
+        this.isTransitioning = true;
+
+        // Update screen tracking
+        const previousScreen = this.currentScreen;
+        this.currentScreen = screenId;
+
+        // Perform animated transition
+        this.performScreenTransition(currentScreenElement, targetScreen, transitionType, direction);
+        
+        // Update personalization after transition
+        setTimeout(() => {
+            this.updatePersonalization();
+            this.onScreenTransitionComplete(screenId, previousScreen);
+            this.isTransitioning = false;
+        }, 100);
+    }
+
+    performScreenTransition(currentScreen, targetScreen, transitionType, direction) {
+        // Prepare target screen for entry
+        targetScreen.classList.remove('hidden', 'exiting');
+        targetScreen.classList.add('entering');
+        
+        // Handle current screen exit
+        if (currentScreen && currentScreen !== targetScreen) {
+            currentScreen.classList.remove('active');
+            currentScreen.classList.add('exiting');
+        }
+
+        // Apply transition type specific classes
+        this.applyTransitionType(targetScreen, transitionType, direction);
+
+        // Use requestAnimationFrame for smooth transitions
+        requestAnimationFrame(() => {
+            // Start entry animation
+            targetScreen.classList.remove('entering');
+            targetScreen.classList.add('active');
+            
+            // Complete exit animation for current screen
+            if (currentScreen && currentScreen !== targetScreen) {
+                setTimeout(() => {
+                    currentScreen.classList.remove('exiting', 'active');
+                    currentScreen.classList.add('hidden');
+                    this.clearTransitionClasses(currentScreen);
+                }, 300);
+            }
+            
+            // Clean up transition classes after animation
+            setTimeout(() => {
+                this.clearTransitionClasses(targetScreen);
+            }, 400);
+        });
+    }
+
+    applyTransitionType(screen, transitionType, direction) {
+        // Clear any existing transition classes
+        this.clearTransitionClasses(screen);
+        
+        switch (transitionType) {
+            case 'slide':
+                if (direction === 'forward') {
+                    screen.classList.add('slide-right');
+                } else {
+                    screen.classList.add('slide-left');
+                }
+                break;
+            case 'scale':
+                screen.classList.add('fade-scale');
+                break;
+            case 'slide-up':
+                screen.classList.add('slide-up');
+                break;
+            case 'slide-down':
+                screen.classList.add('slide-down');
+                break;
+            default:
+                // Default fade transition - no additional classes needed
+                break;
+        }
+    }
+
+    clearTransitionClasses(screen) {
+        if (!screen) return;
+        
+        const transitionClasses = [
+            'entering', 'exiting', 'slide-left', 'slide-right', 
+            'slide-up', 'slide-down', 'fade-scale'
+        ];
+        
+        transitionClasses.forEach(className => {
+            screen.classList.remove(className);
+        });
+    }
+
+    onScreenTransitionComplete(newScreenId, previousScreenId) {
+        // Screen-specific initialization logic
+        switch (newScreenId) {
+            case 'welcome-screen':
+                this.focusNameInput();
+                break;
+            case 'language-screen':
+                this.highlightRecommendedLanguage();
+                break;
+            case 'countdown-screen':
+                // Countdown will auto-start via existing logic
+                break;
+            case 'game-screen':
+                this.initializeGameScreen();
+                break;
+            case 'results-screen':
+                this.triggerResultsAnimations();
+                break;
+        }
+
+        // Track screen flow for analytics/debugging
+        this.logScreenTransition(previousScreenId, newScreenId);
+    }
+
+    highlightRecommendedLanguage() {
+        // Highlight the user's current language or default to English
+        const currentLang = this.userData.language || 'en';
+        const langOption = document.querySelector(`[data-lang="${currentLang}"]`);
+        if (langOption) {
+            langOption.classList.add('recommended');
+            setTimeout(() => {
+                langOption.classList.remove('recommended');
+            }, 2000);
+        }
+    }
+
+    initializeGameScreen() {
+        // Ensure typing input is focused and ready
+        const typingInput = document.getElementById('typing-input');
+        if (typingInput) {
+            setTimeout(() => {
+                typingInput.focus();
+            }, 100);
+        }
+    }
+
+    triggerResultsAnimations() {
+        // This will work with the existing animateResults method
+        setTimeout(() => {
+            if (typeof this.animateResults === 'function') {
+                this.animateResults();
+            }
+        }, 200);
+    }
+
+    logScreenTransition(from, to) {
+        console.log(`Screen transition: ${from} → ${to}`);
+        
+        // Could be extended to track user flow analytics
+        this.screenTransitionHistory = this.screenTransitionHistory || [];
+        this.screenTransitionHistory.push({
+            from,
+            to,
+            timestamp: Date.now()
         });
         
-        // Show target screen
-        const targetScreen = document.getElementById(screenId);
-        if (targetScreen) {
-            targetScreen.classList.remove('hidden');
-            targetScreen.classList.add('active');
-            this.currentScreen = screenId;
-            this.updatePersonalization();
+        // Keep only last 10 transitions
+        if (this.screenTransitionHistory.length > 10) {
+            this.screenTransitionHistory = this.screenTransitionHistory.slice(-10);
         }
     }
 
@@ -184,7 +357,7 @@ class TypingGameApp {
     proceedToLanguageSelection() {
         if (this.userData.name.length >= 2) {
             this.saveUserData();
-            this.showScreen('language-screen');
+            this.showScreen('language-screen', 'slide', 'forward');
         }
     }
 
@@ -209,7 +382,7 @@ class TypingGameApp {
         
         // Auto-proceed to timer selection after brief delay
         setTimeout(() => {
-            this.showScreen('timer-screen');
+            this.showScreen('timer-screen', 'slide', 'forward');
         }, 500);
     }
 
@@ -233,7 +406,7 @@ class TypingGameApp {
 
     // Countdown Screen
     startCountdown() {
-        this.showScreen('countdown-screen');
+        this.showScreen('countdown-screen', 'fade');
         this.updatePersonalization();
         
         const messages = [
@@ -323,7 +496,7 @@ class TypingGameApp {
 
     // Game Screen
     startTypingGame() {
-        this.showScreen('game-screen');
+        this.showScreen('game-screen', 'slide-up');
         this.initializeGame();
         
         // Focus typing input
@@ -557,7 +730,7 @@ class TypingGameApp {
     }
 
     showTimesUpScreen() {
-        this.showScreen('times-up-screen');
+        this.showScreen('times-up-screen', 'scale');
         this.updatePersonalization();
         
         // Transition to results after 3 seconds
@@ -567,7 +740,7 @@ class TypingGameApp {
     }
 
     showResults() {
-        this.showScreen('results-screen');
+        this.showScreen('results-screen', 'fade');
         this.displayResults();
     }
 
@@ -575,99 +748,435 @@ class TypingGameApp {
         const sessionWpm = this.game.get_session_wpm();
         const sessionAccuracy = this.game.get_session_accuracy();
         const totalTyped = this.game.get_session_total_typed_chars();
+        const timeSpent = this.game.get_session_total_time_spent();
+        const sentencesCompleted = this.game.get_session_sentences_completed();
+        const correctChars = this.game.get_session_total_typed_chars() * (sessionAccuracy / 100);
         
-        // Update result displays
-        const finalWpm = document.getElementById('final-wpm');
-        const finalAccuracy = document.getElementById('final-accuracy');
-        const totalCharacters = document.getElementById('total-characters');
+        // Safe values
+        const safeWpm = isNaN(sessionWpm) ? 0 : Math.round(sessionWpm);
+        const safeAccuracy = isNaN(sessionAccuracy) ? 100 : Math.round(sessionAccuracy);
+        
+        // Update achievement badge
+        this.updateAchievementBadge(safeWpm, safeAccuracy);
+        
+        // Update main stats with progress bars
+        this.updateMainStats(safeWpm, safeAccuracy, totalTyped);
+        
+        // Update session details
+        this.updateSessionDetails(timeSpent, sentencesCompleted, correctChars, safeWpm);
+        
+        // Update comparison chart
+        this.updateComparisonChart(safeWpm);
+        
+        // Update date
         const resultsDate = document.getElementById('results-date');
-        
-        if (finalWpm) finalWpm.textContent = isNaN(sessionWpm) ? 0 : Math.round(sessionWpm);
-        if (finalAccuracy) finalAccuracy.textContent = `${isNaN(sessionAccuracy) ? 100 : Math.round(sessionAccuracy)}%`;
-        if (totalCharacters) totalCharacters.textContent = totalTyped;
         if (resultsDate) resultsDate.textContent = new Date().toLocaleDateString();
         
-        // Generate recommendations
+        // Generate enhanced recommendations
         this.generateRecommendations(sessionWpm, sessionAccuracy);
         
         // Save stats
         this.saveSessionStats(sessionWpm, sessionAccuracy, totalTyped);
         
+        // Update personalization
         this.updatePersonalization();
+        
+        // Trigger animations
+        setTimeout(() => this.animateResults(), 300);
+    }
+
+    updateAchievementBadge(wpm, accuracy) {
+        const badgeIcon = document.getElementById('achievement-icon');
+        const badgeText = document.getElementById('achievement-text');
+        
+        if (!badgeIcon || !badgeText) return;
+        
+        let icon = '🎯';
+        let text = 'Well Done!';
+        
+        if (wpm >= 70 && accuracy >= 95) {
+            icon = '🏆';
+            text = 'Typing Master!';
+        } else if (wpm >= 50 && accuracy >= 90) {
+            icon = '⭐';
+            text = 'Excellent!';
+        } else if (wpm >= 30 && accuracy >= 85) {
+            icon = '🚀';
+            text = 'Great Job!';
+        } else if (accuracy >= 95) {
+            icon = '🎯';
+            text = 'Perfect Accuracy!';
+        } else if (wpm >= 40) {
+            icon = '⚡';
+            text = 'Speed Demon!';
+        } else {
+            icon = '💪';
+            text = 'Keep Improving!';
+        }
+        
+        badgeIcon.textContent = icon;
+        badgeText.textContent = text;
+    }
+
+    updateMainStats(wpm, accuracy, totalTyped) {
+        // Update values
+        const finalWpm = document.getElementById('final-wpm');
+        const finalAccuracy = document.getElementById('final-accuracy');
+        const totalCharacters = document.getElementById('total-characters');
+        
+        if (finalWpm) finalWpm.textContent = wpm;
+        if (finalAccuracy) finalAccuracy.textContent = `${accuracy}%`;
+        if (totalCharacters) totalCharacters.textContent = totalTyped;
+        
+        // Update progress bars
+        this.updateProgressBar('wpm-progress', wpm, 100);
+        this.updateProgressBar('accuracy-progress', accuracy, 100);
+        this.updateProgressBar('characters-progress', Math.min(totalTyped / 200 * 100, 100), 100);
+        
+        // Update benchmarks with dynamic comparisons
+        this.updateBenchmarks(wpm, accuracy, totalTyped);
+    }
+
+    updateProgressBar(elementId, value, max) {
+        const progressBar = document.getElementById(elementId);
+        if (!progressBar) return;
+        
+        const percentage = Math.min((value / max) * 100, 100);
+        progressBar.style.width = `${percentage}%`;
+        
+        // Color coding based on performance
+        if (elementId === 'wpm-progress') {
+            if (value >= 60) {
+                progressBar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+            } else if (value >= 40) {
+                progressBar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+            } else {
+                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+            }
+        } else if (elementId === 'accuracy-progress') {
+            if (value >= 95) {
+                progressBar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+            } else if (value >= 85) {
+                progressBar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+            } else {
+                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+            }
+        }
+    }
+
+    updateBenchmarks(wpm, accuracy, totalTyped) {
+        const wpmBenchmark = document.getElementById('wpm-benchmark');
+        const accuracyBenchmark = document.getElementById('accuracy-benchmark');
+        const charactersBenchmark = document.getElementById('characters-benchmark');
+        
+        if (wpmBenchmark) {
+            if (wpm >= 50) {
+                wpmBenchmark.textContent = '🏆 Above professional level!';
+            } else if (wpm >= 40) {
+                wpmBenchmark.textContent = '⭐ Above average (40 WPM)';
+            } else if (wpm >= 25) {
+                wpmBenchmark.textContent = '📈 Average typing speed (25-40 WPM)';
+            } else {
+                wpmBenchmark.textContent = '🎯 Target: 25+ WPM';
+            }
+        }
+        
+        if (accuracyBenchmark) {
+            if (accuracy >= 95) {
+                accuracyBenchmark.textContent = '🎯 Excellent precision!';
+            } else if (accuracy >= 85) {
+                accuracyBenchmark.textContent = '👍 Good accuracy, aim for 95%';
+            } else {
+                accuracyBenchmark.textContent = '📊 Target: 85%+ accuracy';
+            }
+        }
+        
+        if (charactersBenchmark) {
+            if (totalTyped >= 300) {
+                charactersBenchmark.textContent = '🚀 Outstanding effort!';
+            } else if (totalTyped >= 150) {
+                charactersBenchmark.textContent = '💪 Great practice session!';
+            } else {
+                charactersBenchmark.textContent = '📝 Every character counts!';
+            }
+        }
+    }
+
+    updateSessionDetails(timeSpent, sentencesCompleted, correctChars, peakWpm) {
+        const timeSpentEl = document.getElementById('session-time-spent');
+        const sentencesCompletedEl = document.getElementById('sentences-completed');
+        const correctCharactersEl = document.getElementById('correct-characters');
+        const peakWpmEl = document.getElementById('peak-wpm');
+        
+        if (timeSpentEl) {
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = Math.floor(timeSpent % 60);
+            timeSpentEl.textContent = `${minutes}m ${seconds}s`;
+        }
+        
+        if (sentencesCompletedEl) {
+            sentencesCompletedEl.textContent = sentencesCompleted;
+        }
+        
+        if (correctCharactersEl) {
+            correctCharactersEl.textContent = Math.round(correctChars);
+        }
+        
+        if (peakWpmEl) {
+            // For now, use session WPM as peak. In future, could track real-time peak
+            peakWpmEl.textContent = peakWpm;
+        }
+    }
+
+    updateComparisonChart(wpm) {
+        const userPosition = document.getElementById('user-position');
+        if (!userPosition) return;
+        
+        // Calculate position on the chart (0-100%)
+        let position = 0;
+        
+        if (wpm <= 25) {
+            // Position within beginner range (0-25%)
+            position = (wpm / 25) * 25;
+        } else if (wpm <= 40) {
+            // Position within average range (25-65%)
+            position = 25 + ((wpm - 25) / 15) * 40;
+        } else if (wpm <= 60) {
+            // Position within good range (65-85%)
+            position = 65 + ((wpm - 40) / 20) * 20;
+        } else {
+            // Position within expert range (85-100%)
+            position = 85 + Math.min(((wpm - 60) / 40) * 15, 15);
+        }
+        
+        userPosition.style.left = `${Math.min(position, 95)}%`;
+    }
+
+    animateResults() {
+        // Trigger progressive animations for a more engaging experience
+        const elements = [
+            '.achievement-badge',
+            '.stat-card',
+            '.session-stat',
+            '.comparison-item',
+            '.recommendation-section'
+        ];
+        
+        elements.forEach((selector, index) => {
+            const els = document.querySelectorAll(selector);
+            els.forEach((el, elIndex) => {
+                setTimeout(() => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(20px)';
+                    el.style.transition = 'all 0.6s ease-out';
+                    
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, 50);
+                }, (index * 200) + (elIndex * 100));
+            });
+        });
+    }
+
+    // Enhanced Performance Analysis Engine
+    analyzePerformance(wpm, accuracy) {
+        const analysis = {
+            wpm: wpm,
+            accuracy: accuracy,
+            level: 'Beginner',
+            description: '',
+            strengths: [],
+            improvements: [],
+            nextGoals: [],
+            practiceAreas: [],
+            motivationalMessage: ''
+        };
+
+        // Determine performance level
+        if (wpm >= 80) {
+            analysis.level = 'Master';
+            analysis.description = 'You have mastered typing! Your speed is exceptional.';
+        } else if (wpm >= 60) {
+            analysis.level = 'Expert';
+            analysis.description = 'Outstanding typing speed! You type faster than most professionals.';
+        } else if (wpm >= 45) {
+            analysis.level = 'Advanced';
+            analysis.description = 'Excellent typing skills! You\'re in the top tier of typists.';
+        } else if (wpm >= 30) {
+            analysis.level = 'Intermediate';
+            analysis.description = 'Good progress! You\'re developing solid typing skills.';
+        } else if (wpm >= 15) {
+            analysis.level = 'Developing';
+            analysis.description = 'You\'re building typing skills! Keep practicing consistently.';
+        } else {
+            analysis.level = 'Beginner';
+            analysis.description = 'Everyone starts somewhere! Focus on accuracy and proper technique.';
+        }
+
+        // Analyze strengths
+        if (accuracy >= 98) {
+            analysis.strengths.push('🎯 Exceptional accuracy - you make very few mistakes');
+        } else if (accuracy >= 95) {
+            analysis.strengths.push('✨ Excellent accuracy - very few typing errors');
+        } else if (accuracy >= 90) {
+            analysis.strengths.push('👌 Good accuracy - making steady progress');
+        }
+
+        if (wpm >= 50) {
+            analysis.strengths.push('⚡ Fast typing speed - you can type quickly');
+        } else if (wpm >= 30) {
+            analysis.strengths.push('📈 Decent typing speed - good foundation');
+        }
+
+        // Analyze improvement areas
+        if (accuracy < 85) {
+            analysis.improvements.push('🎯 Accuracy needs improvement - slow down to reduce mistakes');
+        } else if (accuracy < 95) {
+            analysis.improvements.push('🔍 Focus on precision - aim for 95%+ accuracy');
+        }
+
+        if (wpm < 25) {
+            analysis.improvements.push('⌨️ Speed development - practice touch typing without looking');
+        } else if (wpm < 40) {
+            analysis.improvements.push('🚀 Speed building - work on common letter combinations');
+        }
+
+        // Set next goals
+        if (wpm < 25) {
+            analysis.nextGoals.push(`Reach ${Math.ceil(wpm / 5) * 5 + 5} WPM`);
+        } else if (wpm < 50) {
+            analysis.nextGoals.push(`Achieve ${Math.ceil(wpm / 10) * 10 + 5} WPM`);
+        } else {
+            analysis.nextGoals.push('Maintain consistent 50+ WPM performance');
+        }
+
+        if (accuracy < 95) {
+            analysis.nextGoals.push(`Improve accuracy to ${Math.min(95, Math.ceil(accuracy / 5) * 5 + 5)}%`);
+        } else {
+            analysis.nextGoals.push('Maintain 95%+ accuracy consistently');
+        }
+
+        // Practice area recommendations
+        if (wpm < 30) {
+            analysis.practiceAreas.push('Touch typing fundamentals');
+            analysis.practiceAreas.push('Home row key placement');
+        } else if (wpm < 50) {
+            analysis.practiceAreas.push('Common word patterns');
+            analysis.practiceAreas.push('Letter combination drills');
+        } else {
+            analysis.practiceAreas.push('Advanced text passages');
+            analysis.practiceAreas.push('Specialized vocabulary');
+        }
+
+        if (accuracy < 90) {
+            analysis.practiceAreas.push('Accuracy-focused exercises');
+            analysis.practiceAreas.push('Slow, deliberate typing');
+        }
+
+        // Language-specific recommendations
+        const currentLanguage = this.userData.languageName || 'English';
+        if (currentLanguage === 'Español') {
+            analysis.practiceAreas.push('Spanish accent characters (ñ, é, í)');
+        } else if (currentLanguage === 'Français') {
+            analysis.practiceAreas.push('French accent marks (ç, é, à, û)');
+        }
+
+        // Motivational message based on performance
+        if (wpm >= 60 && accuracy >= 95) {
+            analysis.motivationalMessage = '🏆 Outstanding! You have professional-level typing skills. Consider challenging yourself with complex texts or teaching others!';
+        } else if (wpm >= 40 && accuracy >= 90) {
+            analysis.motivationalMessage = '🌟 Excellent work! You\'re well above average. Keep practicing to reach expert level!';
+        } else if (wpm >= 25 && accuracy >= 85) {
+            analysis.motivationalMessage = '👍 Good progress! You\'re developing solid skills. Regular practice will take you to the next level.';
+        } else if (accuracy >= 90) {
+            analysis.motivationalMessage = '🎯 Great accuracy! Now focus on building speed while maintaining your precision.';
+        } else if (wpm >= 30) {
+            analysis.motivationalMessage = '⚡ Nice speed! Slow down slightly to improve accuracy - precision beats speed when learning.';
+        } else {
+            analysis.motivationalMessage = '🌱 Keep practicing! Every expert was once a beginner. Focus on proper technique and consistency.';
+        }
+
+        return analysis;
     }
 
     generateRecommendations(wpm, accuracy) {
         const safeWpm = isNaN(wpm) ? 0 : wpm;
         const safeAccuracy = isNaN(accuracy) ? 100 : accuracy;
         
-        // Determine performance level
-        let level = 'Beginner';
-        let levelDescription = 'Keep practicing to improve!';
-        
-        if (safeWpm >= 60) {
-            level = 'Expert';
-            levelDescription = 'Outstanding typing speed!';
-        } else if (safeWpm >= 40) {
-            level = 'Advanced';
-            levelDescription = 'Excellent typing skills!';
-        } else if (safeWpm >= 25) {
-            level = 'Intermediate';
-            levelDescription = 'Good progress on your typing journey!';
-        }
+        // Use enhanced recommendation engine
+        const analysis = this.analyzePerformance(safeWpm, safeAccuracy);
         
         const levelBadge = document.getElementById('level-badge');
         const levelDesc = document.getElementById('level-description');
         
-        if (levelBadge) levelBadge.textContent = level;
-        if (levelDesc) levelDesc.textContent = levelDescription;
+        if (levelBadge) levelBadge.textContent = analysis.level;
+        if (levelDesc) levelDesc.textContent = analysis.description;
         
         // Generate specific recommendations
-        this.displayPersonalizedRecommendations(safeWpm, safeAccuracy);
+        this.displayPersonalizedRecommendations(analysis);
     }
 
-    displayPersonalizedRecommendations(wpm, accuracy) {
+    displayPersonalizedRecommendations(analysis) {
         const recommendationsEl = document.getElementById('personalized-recommendations');
         if (!recommendationsEl) return;
         
-        const recommendations = [];
-        
-        if (accuracy < 90) {
-            recommendations.push({
-                icon: '🎯',
-                text: 'Focus on accuracy first. Slow down and aim for 95%+ accuracy before increasing speed.'
-            });
-        }
-        
-        if (wpm < 30) {
-            recommendations.push({
-                icon: '⌨️',
-                text: 'Practice touch typing. Try to type without looking at the keyboard.'
-            });
-        } else if (wpm < 50) {
-            recommendations.push({
-                icon: '🚀',
-                text: 'Great progress! Practice common word patterns to build muscle memory.'
-            });
-        }
-        
-        if (wpm >= 50 && accuracy >= 95) {
-            recommendations.push({
-                icon: '🏆',
-                text: 'Excellent work! You have professional-level typing skills.'
-            });
-        }
-        
-        // Display recommendations
+        // Clear existing content
         recommendationsEl.innerHTML = '';
-        recommendations.forEach(rec => {
-            const recEl = document.createElement('div');
-            recEl.className = 'recommendation-item';
-            recEl.innerHTML = `
-                <div class="rec-icon">${rec.icon}</div>
-                <div class="rec-text">${rec.text}</div>
-            `;
-            recommendationsEl.appendChild(recEl);
+        
+        // Create comprehensive recommendation display
+        const sectionsToShow = [
+            { title: '💪 Your Strengths', items: analysis.strengths, className: 'strengths-section' },
+            { title: '🎯 Areas to Improve', items: analysis.improvements, className: 'improvements-section' },
+            { title: '🚀 Next Goals', items: analysis.nextGoals, className: 'goals-section' },
+            { title: '📚 Practice Areas', items: analysis.practiceAreas, className: 'practice-section' }
+        ];
+        
+        sectionsToShow.forEach(section => {
+            if (section.items.length > 0) {
+                const sectionEl = document.createElement('div');
+                sectionEl.className = `recommendation-section ${section.className}`;
+                
+                const titleEl = document.createElement('div');
+                titleEl.className = 'rec-section-title';
+                titleEl.textContent = section.title;
+                sectionEl.appendChild(titleEl);
+                
+                section.items.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'recommendation-item';
+                    
+                    // Extract icon and text if it's formatted with icon
+                    const iconMatch = item.match(/^([📈⚡🎯✨👌🔍⌨️🚀📚🏆]+)\s*(.+)$/);
+                    if (iconMatch) {
+                        itemEl.innerHTML = `
+                            <div class="rec-icon">${iconMatch[1]}</div>
+                            <div class="rec-text">${iconMatch[2]}</div>
+                        `;
+                    } else {
+                        itemEl.innerHTML = `
+                            <div class="rec-icon">•</div>
+                            <div class="rec-text">${item}</div>
+                        `;
+                    }
+                    sectionEl.appendChild(itemEl);
+                });
+                
+                recommendationsEl.appendChild(sectionEl);
+            }
         });
+        
+        // Add motivational message at the end
+        if (analysis.motivationalMessage) {
+            const motivationEl = document.createElement('div');
+            motivationEl.className = 'motivation-message';
+            motivationEl.innerHTML = `
+                <div class="motivation-content">
+                    ${analysis.motivationalMessage}
+                </div>
+            `;
+            recommendationsEl.appendChild(motivationEl);
+        }
     }
 
     // Utility Methods
@@ -690,12 +1199,19 @@ class TypingGameApp {
         }
     }
 
-    // Data Persistence
+    // Enhanced Data Persistence System
     saveUserData() {
         try {
-            localStorage.setItem('typeMasterUser', JSON.stringify(this.userData));
+            const dataToSave = {
+                ...this.userData,
+                lastSaved: new Date().toISOString(),
+                version: '1.0'
+            };
+            localStorage.setItem('typeMasterUser', JSON.stringify(dataToSave));
+            console.log('User data saved successfully');
         } catch (error) {
             console.warn('Failed to save user data:', error);
+            this.showNotification('Failed to save data locally');
         }
     }
 
@@ -704,38 +1220,411 @@ class TypingGameApp {
             const saved = localStorage.getItem('typeMasterUser');
             if (saved) {
                 const parsedData = JSON.parse(saved);
-                this.userData = { ...this.userData, ...parsedData };
+                
+                // Validate and migrate data if needed
+                const validatedData = this.validateUserData(parsedData);
+                this.userData = { ...this.userData, ...validatedData };
+                
+                console.log('User data loaded successfully:', this.userData);
+                return true;
             }
         } catch (error) {
             console.warn('Failed to load user data:', error);
+            this.clearCorruptedData();
+        }
+        return false;
+    }
+
+    validateUserData(data) {
+        // Ensure all required fields exist with defaults
+        const defaultUserData = {
+            name: '',
+            language: 'en',
+            languageName: 'English',
+            duration: 120,
+            stats: [],
+            preferences: {
+                soundEnabled: true,
+                showTimer: true,
+                autoAdvance: true,
+                keyboardLayout: 'qwerty'
+            },
+            achievements: [],
+            totalSessions: 0,
+            bestWpm: 0,
+            bestAccuracy: 0,
+            firstVisit: new Date().toISOString(),
+            version: '1.0'
+        };
+
+        // Merge with defaults to ensure all fields exist
+        const validatedData = { ...defaultUserData, ...data };
+        
+        // Validate stats array
+        if (!Array.isArray(validatedData.stats)) {
+            validatedData.stats = [];
+        }
+        
+        // Validate preferences object
+        if (typeof validatedData.preferences !== 'object') {
+            validatedData.preferences = defaultUserData.preferences;
+        }
+        
+        // Ensure language is supported
+        const supportedLanguages = ['en', 'es', 'fr'];
+        if (!supportedLanguages.includes(validatedData.language)) {
+            validatedData.language = 'en';
+            validatedData.languageName = 'English';
+        }
+        
+        // Validate numeric values
+        if (typeof validatedData.duration !== 'number' || validatedData.duration <= 0) {
+            validatedData.duration = 120;
+        }
+        
+        return validatedData;
+    }
+
+    clearCorruptedData() {
+        try {
+            localStorage.removeItem('typeMasterUser');
+            console.log('Corrupted user data cleared');
+        } catch (error) {
+            console.warn('Failed to clear corrupted data:', error);
         }
     }
 
     saveSessionStats(wpm, accuracy, totalTyped) {
         const sessionData = {
+            id: Date.now(),
             date: new Date().toISOString(),
             wpm: Math.round(wpm || 0),
             accuracy: Math.round(accuracy || 100),
-            totalTyped,
+            totalTyped: totalTyped || 0,
             language: this.userData.language,
-            duration: this.userData.duration
+            languageName: this.userData.languageName,
+            duration: this.userData.duration,
+            sentencesCompleted: this.game ? this.game.get_session_sentences_completed() : 0,
+            timeSpent: this.game ? this.game.get_session_total_time_spent() : 0
         };
         
+        // Add to stats array
         this.userData.stats.push(sessionData);
         
-        // Keep only last 10 sessions
-        if (this.userData.stats.length > 10) {
-            this.userData.stats = this.userData.stats.slice(-10);
+        // Update session counter
+        this.userData.totalSessions = (this.userData.totalSessions || 0) + 1;
+        
+        // Update personal bests
+        this.updatePersonalBests(wpm, accuracy);
+        
+        // Check for achievements
+        this.checkAchievements(sessionData);
+        
+        // Keep only last 50 sessions (increased from 10)
+        if (this.userData.stats.length > 50) {
+            this.userData.stats = this.userData.stats.slice(-50);
         }
         
         this.saveUserData();
     }
 
+    updatePersonalBests(wpm, accuracy) {
+        const safeWpm = Math.round(wpm || 0);
+        const safeAccuracy = Math.round(accuracy || 100);
+        
+        if (safeWpm > (this.userData.bestWpm || 0)) {
+            this.userData.bestWpm = safeWpm;
+        }
+        
+        if (safeAccuracy > (this.userData.bestAccuracy || 0)) {
+            this.userData.bestAccuracy = safeAccuracy;
+        }
+    }
+
+    checkAchievements(sessionData) {
+        const achievements = this.userData.achievements || [];
+        const achievementIds = achievements.map(a => a.id);
+        
+        // Define available achievements
+        const availableAchievements = [
+            {
+                id: 'first_session',
+                name: 'First Steps',
+                description: 'Complete your first typing session',
+                icon: '🎯',
+                condition: () => this.userData.totalSessions === 1
+            },
+            {
+                id: 'wpm_25',
+                name: 'Speed Learner',
+                description: 'Reach 25 WPM',
+                icon: '🚀',
+                condition: () => sessionData.wpm >= 25
+            },
+            {
+                id: 'wpm_50',
+                name: 'Fast Typer',
+                description: 'Reach 50 WPM',
+                icon: '⚡',
+                condition: () => sessionData.wpm >= 50
+            },
+            {
+                id: 'wpm_70',
+                name: 'Typing Expert',
+                description: 'Reach 70 WPM',
+                icon: '🏆',
+                condition: () => sessionData.wpm >= 70
+            },
+            {
+                id: 'accuracy_95',
+                name: 'Precision Master',
+                description: 'Achieve 95% accuracy',
+                icon: '🎯',
+                condition: () => sessionData.accuracy >= 95
+            },
+            {
+                id: 'accuracy_98',
+                name: 'Perfect Precision',
+                description: 'Achieve 98% accuracy',
+                icon: '💎',
+                condition: () => sessionData.accuracy >= 98
+            },
+            {
+                id: 'session_10',
+                name: 'Dedicated Learner',
+                description: 'Complete 10 typing sessions',
+                icon: '📚',
+                condition: () => this.userData.totalSessions >= 10
+            },
+            {
+                id: 'session_25',
+                name: 'Typing Enthusiast',
+                description: 'Complete 25 typing sessions',
+                icon: '🌟',
+                condition: () => this.userData.totalSessions >= 25
+            },
+            {
+                id: 'multilingual',
+                name: 'Multilingual Typer',
+                description: 'Type in different languages',
+                icon: '🌍',
+                condition: () => {
+                    const languages = new Set(this.userData.stats.map(s => s.language));
+                    return languages.size >= 2;
+                }
+            }
+        ];
+        
+        // Check each achievement
+        availableAchievements.forEach(achievement => {
+            if (!achievementIds.includes(achievement.id) && achievement.condition()) {
+                const newAchievement = {
+                    ...achievement,
+                    unlockedDate: new Date().toISOString()
+                };
+                delete newAchievement.condition; // Remove function from stored data
+                
+                this.userData.achievements.push(newAchievement);
+                this.showAchievementNotification(newAchievement);
+            }
+        });
+    }
+
+    showAchievementNotification(achievement) {
+        const notification = document.createElement('div');
+        notification.className = 'achievement-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            z-index: 9999;
+            animation: achievementSlideIn 0.5s ease-out;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        `;
+        
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="font-size: 1.5rem;">${achievement.icon}</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Achievement Unlocked!</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">${achievement.name}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.7;">${achievement.description}</div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'achievementSlideOut 0.3s ease-in';
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
+    }
+
+    // User preferences management
+    updatePreference(key, value) {
+        if (!this.userData.preferences) {
+            this.userData.preferences = {};
+        }
+        
+        this.userData.preferences[key] = value;
+        this.saveUserData();
+        
+        console.log(`Preference updated: ${key} = ${value}`);
+    }
+
+    getPreference(key, defaultValue = null) {
+        return this.userData.preferences?.[key] ?? defaultValue;
+    }
+
+    // Stats and analytics
+    getTypingStats() {
+        const stats = this.userData.stats || [];
+        if (stats.length === 0) {
+            return {
+                totalSessions: 0,
+                averageWpm: 0,
+                averageAccuracy: 0,
+                totalCharactersTyped: 0,
+                totalTimeSpent: 0,
+                improvementTrend: 'N/A'
+            };
+        }
+        
+        const totalSessions = stats.length;
+        const averageWpm = stats.reduce((sum, s) => sum + (s.wpm || 0), 0) / totalSessions;
+        const averageAccuracy = stats.reduce((sum, s) => sum + (s.accuracy || 0), 0) / totalSessions;
+        const totalCharactersTyped = stats.reduce((sum, s) => sum + (s.totalTyped || 0), 0);
+        const totalTimeSpent = stats.reduce((sum, s) => sum + (s.timeSpent || 0), 0);
+        
+        // Calculate improvement trend (last 5 vs first 5 sessions)
+        let improvementTrend = 'stable';
+        if (totalSessions >= 10) {
+            const firstFive = stats.slice(0, 5);
+            const lastFive = stats.slice(-5);
+            
+            const firstAvgWpm = firstFive.reduce((sum, s) => sum + (s.wpm || 0), 0) / 5;
+            const lastAvgWpm = lastFive.reduce((sum, s) => sum + (s.wpm || 0), 0) / 5;
+            
+            if (lastAvgWpm > firstAvgWpm + 5) {
+                improvementTrend = 'improving';
+            } else if (lastAvgWpm < firstAvgWpm - 5) {
+                improvementTrend = 'declining';
+            }
+        }
+        
+        return {
+            totalSessions,
+            averageWpm: Math.round(averageWpm),
+            averageAccuracy: Math.round(averageAccuracy),
+            totalCharactersTyped,
+            totalTimeSpent: Math.round(totalTimeSpent),
+            improvementTrend,
+            bestWpm: this.userData.bestWpm || 0,
+            bestAccuracy: this.userData.bestAccuracy || 0
+        };
+    }
+
+    // Data export functionality
+    exportUserData() {
+        try {
+            const exportData = {
+                userData: this.userData,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `type-master-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            this.showNotification('Data exported successfully!');
+        } catch (error) {
+            console.error('Failed to export data:', error);
+            this.showNotification('Failed to export data');
+        }
+    }
+
+    // Data import functionality
+    importUserData(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importData = JSON.parse(e.target.result);
+                
+                if (importData.userData) {
+                    const validatedData = this.validateUserData(importData.userData);
+                    this.userData = validatedData;
+                    this.saveUserData();
+                    this.showNotification('Data imported successfully!');
+                    
+                    // Refresh display
+                    this.updatePersonalization();
+                } else {
+                    this.showNotification('Invalid data format');
+                }
+            } catch (error) {
+                console.error('Failed to import data:', error);
+                this.showNotification('Failed to import data');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // Clear all user data
+    clearAllUserData() {
+        if (confirm('Are you sure you want to clear all your data? This cannot be undone.')) {
+            try {
+                localStorage.removeItem('typeMasterUser');
+                
+                // Reset to defaults
+                this.userData = {
+                    name: '',
+                    language: 'en',
+                    languageName: 'English',
+                    duration: 120,
+                    stats: []
+                };
+                
+                this.showNotification('All data cleared successfully');
+                console.log('All user data cleared');
+            } catch (error) {
+                console.error('Failed to clear user data:', error);
+                this.showNotification('Failed to clear data');
+            }
+        }
+    }
+
     // Action Handlers
     restartGame() {
+        // Play again with same settings - go directly to countdown
         this.gameState = 'setup';
         this.clearTimer();
         this.startCountdown();
+    }
+
+    changeSettings() {
+        // Change settings - go back to language selection to allow modifications
+        this.gameState = 'setup';
+        this.clearTimer();
+        this.showScreen('language-screen', 'slide', 'backward');
+    }
+
+    restartFromBeginning() {
+        // Complete restart - go back to welcome screen
+        this.gameState = 'setup';
+        this.clearTimer();
+        this.showScreen('welcome-screen', 'fade');
     }
 
     shareResults() {
