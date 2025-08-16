@@ -110,7 +110,15 @@ function setupEventListeners() {
     const changeSettingsBtn = document.getElementById('change-settings-btn');
     const newSessionBtn = document.getElementById('new-session-btn');
 
-    if (playAgainBtn) playAgainBtn.addEventListener('click', () => app.restart_game());
+    if (playAgainBtn) playAgainBtn.addEventListener('click', () => {
+        // Clear countdown timer to prevent stuck countdown
+        clearCountdownTimer();
+        clearGameTimer();
+        // Clear name input and reset form
+        resetWelcomeForm();
+        // Start new session from welcome screen
+        app.new_session();
+    });
     if (changeSettingsBtn) changeSettingsBtn.addEventListener('click', () => app.change_settings());
     if (newSessionBtn) newSessionBtn.addEventListener('click', () => app.new_session());
 
@@ -583,3 +591,22 @@ window.debugTyping = (text) => {
         return result;
     }
 };
+
+// Reset welcome form for new session
+function resetWelcomeForm() {
+    const nameInput = document.getElementById('player-name');
+    const continueBtn = document.getElementById('continue-to-language');
+    
+    if (nameInput) {
+        nameInput.value = '';
+        nameInput.focus();
+    }
+    
+    if (continueBtn) {
+        continueBtn.disabled = true;
+    }
+    
+    // Clear any selected options
+    document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('selected'));
+    document.querySelectorAll('.timer-option').forEach(opt => opt.classList.remove('selected'));
+}

@@ -1,167 +1,159 @@
-# 🦀 Type Master - Rust Typing Speed Test
+# 🐯 Story Typer - Fun Typing Game for Kids
 
-A high-performance typing speed test built with **Rust** and **WebAssembly**. This project demonstrates a **Rust-dominant** web application architecture where the majority of application logic is implemented in Rust.
+A modern, colorful typing game designed specifically for Indonesian children to develop motor skills and typing abilities through engaging stories and adventures. This educational tool helps children improve hand-eye coordination, finger dexterity, and keyboard familiarity in a fun, interactive way.
+
+**Author:** saimskywalker
 
 ## ✨ Features
 
-- **🦀 Rust-powered**: Core logic written in Rust for maximum performance
-- **⚡ WebAssembly**: Compiled to WASM for near-native speed in the browser
-- **🌍 Multi-language**: Support for English, Spanish, and French
-- **📊 Real-time metrics**: Live WPM and accuracy tracking  
-- **💾 Persistent data**: Your progress is saved locally
-- **📱 Responsive design**: Works on desktop and mobile devices
-- **🎯 Clean architecture**: Rust handles state, JavaScript handles DOM
-
-## 🏗️ Architecture Breakdown
-
-This project showcases a **Rust-dominant** web application:
-
-- **625 lines of Rust** (38% of codebase) - Core application logic
-- **239 lines of JavaScript** (15% of codebase) - Minimal DOM glue  
-- **580 lines of CSS** (35% of codebase) - Styling
-- **203 lines of HTML** (12% of codebase) - Structure
-
-The majority of application logic including game state, user persistence, calculations, and screen navigation is implemented in **Rust**.
-
-## 🛠️ Prerequisites
-
-- [Rust](https://rustup.rs/) (latest stable version)
-- [wasm-pack](https://rustwasm.github.io/wasm-pack/) for building WebAssembly modules
-- A local HTTP server (Python's http.server, Node's serve, etc.)
+- **🌍 Multi-language Support**: Indonesian (primary), English, Spanish, French
+- **🎨 Modern Glass UI**: Beautiful glass morphism design with smooth animations
+- **📱 Mobile-First**: Fully responsive design that works on all devices
+- **🐯 Indonesian Theme**: Cultural elements with tiger mascot and tropical colors
+- **📊 Privacy-Safe Analytics**: Child-friendly monitoring with COPPA/GDPR compliance
+- **🎯 A/B Testing**: Safe experimentation framework for UI improvements
+- **⏰ Flexible Timing**: Choose from 1-5 minute typing sessions
+- **🎉 Interactive Feedback**: Real-time encouragement and celebrations
 
 ## 🚀 Quick Start
 
-**The easiest way to get started:**
+### Prerequisites
+- Rust (latest stable)
+- Node.js (for development tools)
+- `wasm-pack` for WebAssembly compilation
 
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/saimskywalker/rust-typing-game.git
+cd rust-typing-game
+```
+
+2. **Install dependencies**
 ```bash
 npm install
+```
+
+3. **Build the WebAssembly module**
+```bash
+wasm-pack build --target web --out-dir pkg
+```
+
+4. **Start development server**
+```bash
 npm run dev
 ```
 
-This will:
-- ✅ Build the Rust code to WebAssembly 
-- ✅ Start a development server on `http://localhost:5173`
-- ✅ Automatically open your browser
-
-**Alternative methods:**
-
-```bash
-# Manual build + serve
-chmod +x build.sh
-./build.sh
-npm run serve
-
-# Using Python (traditional)
-./build.sh && python -m http.server 5173
+5. **Open in browser**
+```
+http://localhost:3000
 ```
 
 ## 📁 Project Structure
 
 ```
 rust-typing-game/
-├── src/
-│   └── lib.rs          # Rust game logic
-├── pkg/                # Generated WebAssembly files (after build)
-├── index.html          # Main HTML file
-├── style.css           # Modern CSS styling
-├── app.js              # JavaScript glue code
-├── build.sh            # Build script
-├── package.json        # npm configuration
+├── src/                    # Rust source code
+│   └── lib.rs             # Main game logic and WASM bindings
+├── pkg/                   # Generated WebAssembly files
+├── monitoring/            # Analytics and monitoring system
+│   ├── monitor.js         # Client-side analytics
+│   ├── ab-testing.js      # A/B testing framework
+│   ├── analytics-server.js # Analytics server
+│   └── dashboard.html     # Analytics dashboard
+├── index.html            # Main HTML file
+├── app.js               # JavaScript application logic
+├── style.css            # Modern glass morphism styles
+├── package.json         # Node.js dependencies
 ├── Cargo.toml          # Rust dependencies
 └── README.md           # This file
 ```
 
 ## 🎮 How to Play
 
-1. **Start**: Click on the text area or start typing to begin
-2. **Type**: Type the displayed sentence as accurately as possible
-3. **Monitor**: Watch your real-time WPM and accuracy stats
-4. **Complete**: Finish the sentence to see your final results
-5. **Repeat**: Click "New Sentence" to try again with a different sentence
+1. **Enter Your Name**: Start by typing your name on the welcome screen
+2. **Choose Language**: Select from Indonesian (recommended), English, Spanish, or French
+3. **Pick Duration**: Choose how long you want to play (1-5 minutes)
+4. **Get Ready**: Watch the countdown and prepare to type
+5. **Type Stories**: Help the tiger by typing the displayed stories
+6. **See Results**: Check your words per minute, accuracy, and progress
 
-## 🏗️ Architecture
+## 🛠️ Development
 
-### Rust Core (`src/lib.rs`)
-- **Sentence Generation**: Random selection from curated sentence list
-- **Timer Management**: Precise timing using JavaScript Date API
-- **Statistics Calculation**: Real-time WPM and accuracy computation
-- **Game State**: Complete game state management
+### Available Scripts
 
-### WebAssembly Interface
-- **wasm-bindgen**: Seamless Rust-JavaScript interop
-- **Efficient**: Minimal overhead between Rust and JavaScript
-- **Type-safe**: Strongly typed interface between languages
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `wasm-pack build` - Compile Rust to WebAssembly
 
-### Frontend (HTML/CSS/JS)
-- **Modern CSS**: CSS Grid, Flexbox, custom properties, animations
-- **Responsive Design**: Mobile-first approach with breakpoints
-- **Accessibility**: Proper focus management and keyboard navigation
-- **Performance**: Efficient DOM manipulation and event handling
+### Key Technologies
 
-## 🎨 Features in Detail
+- **Frontend**: HTML5, CSS3 (Glass Morphism), Vanilla JavaScript
+- **Backend**: Rust + WebAssembly (WASM)
+- **Styling**: Modern CSS with backdrop-filter and gradients
+- **Fonts**: Poppins, Inter (Google Fonts)
+- **Analytics**: Privacy-focused, local storage based
 
-### Real-time Visual Feedback
-- Green highlighting for correct characters
-- Red highlighting for incorrect characters
-- Animated cursor following typing progress
-- Smooth transitions and hover effects
+## 🔒 Privacy & Safety
 
-### Statistics Tracking
-- **WPM Calculation**: Based on standard 5-character word length
-- **Accuracy**: Percentage of correctly typed characters
-- **Timer**: Real-time elapsed time display
-- **Final Results**: Complete statistics modal upon completion
+This application is designed with children's privacy as the top priority:
 
-### User Experience
-- **Auto-focus**: Input field focuses automatically
-- **Keyboard Shortcuts**: Quick access to common actions
-- **Responsive**: Adapts to different screen sizes
-- **Loading States**: Smooth loading experience
+- ❌ No personal data collection
+- ❌ No typed text storage
+- ❌ No tracking cookies
+- ✅ Local analytics only
+- ✅ COPPA/GDPR-K compliant
+- ✅ Easy parental controls
 
-## 🔧 Development
+## 🎨 Customization
 
-### Building
-```bash
-# Development build
-wasm-pack build --target web --out-dir pkg
-
-# Development with auto-serve
-npm run dev
-
-# Clean build artifacts
-npm run clean
+### Changing Colors
+Modify CSS variables in `style.css`:
+```css
+:root {
+  --sunset-orange: #FF6B35;
+  --tropical-blue: #004E89;
+  --bright-yellow: #FFD23F;
+  /* Add your colors here */
+}
 ```
 
-### Customization
-- **Add Sentences**: Modify the `sentences` vector in `src/lib.rs`
-- **Styling**: Customize colors and layout in `style.css`
-- **Features**: Extend game logic in Rust or UI in JavaScript
+### Adding Languages
+1. Edit `src/lib.rs` to add new language sentences
+2. Update language options in `index.html`
+3. Rebuild with `wasm-pack build`
 
-## 📈 Performance
+### Mascot Changes
+Replace tiger emoji (🐯) in `index.html` with your preferred character.
 
-- **WebAssembly**: Near-native performance for game calculations
-- **Efficient Rendering**: Minimal DOM manipulation
-- **Small Bundle**: Optimized WebAssembly binary
-- **Fast Loading**: Efficient asset loading and caching
+## 📊 Analytics Dashboard
+
+Access the analytics dashboard at `/dashboard.html` to view:
+- Session statistics
+- Learning progress
+- Performance metrics
+- System health
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes
-4. Test thoroughly
+3. Commit changes: `git commit -m 'Add feature'`
+4. Push to branch: `git push origin feature-name`
 5. Submit a pull request
 
 ## 📄 License
 
-MIT License - feel free to use this project for learning and development!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- Built with [Rust](https://www.rust-lang.org/) and [WebAssembly](https://webassembly.org/)
-- Uses [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen) for Rust-JS interop
-- Styled with modern CSS and [Inter font](https://rsms.me/inter/)
+- Indonesian children and educators who inspired this project
+- The Rust and WebAssembly communities
+- Modern web design principles and glass morphism trends
 
 ---
 
-**Happy Typing!** 🎯
+**Made by saimskywalker**
