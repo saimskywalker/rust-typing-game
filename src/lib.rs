@@ -15,7 +15,8 @@ macro_rules! console_log {
 
 #[wasm_bindgen]
 pub struct TypingGame {
-    sentences: Vec<&'static str>,
+    sentences: HashMap<String, Vec<&'static str>>,
+    current_language: String,
     current_sentence: String,
     start_time: Option<f64>,
     end_time: Option<f64>,
@@ -36,7 +37,10 @@ pub struct TypingGame {
 impl TypingGame {
     #[wasm_bindgen(constructor)]
     pub fn new() -> TypingGame {
-        let sentences = vec![
+        let mut sentences = HashMap::new();
+        
+        // English sentences
+        sentences.insert("en".to_string(), vec![
             "The quick brown fox jumps over the lazy dog.",
             "Pack my box with five dozen liquor jugs.",
             "How vexingly quick daft zebras jump!",
@@ -52,10 +56,43 @@ impl TypingGame {
             "When zombies arrive, quickly fax judge Pat.",
             "Grumpy wizards make toxic brew for evil queen.",
             "Few black taxis drive up major roads on quiet hazy nights.",
-        ];
+        ]);
+        
+        // Spanish sentences
+        sentences.insert("es".to_string(), vec![
+            "El veloz murciélago hindú comía feliz cardillo y kiwi.",
+            "La cigüeña tocaba el saxofón detrás del palenque de paja.",
+            "Benjamín pidió una bebida de kiwi y fresa.",
+            "El jefe buscó el texto que Wolfiana ya había guardado.",
+            "Jovencillo emponzoñado de whisky, ¡qué figurón exhibe!",
+            "Extraño pan de col y kiwi se exhibe en el almacén.",
+            "Quiere la boca exhausta vid, kiwi, piña y fugaz jamón.",
+            "Ese libro explica en su epígrafe las hazañas y aventuras.",
+            "Mi fiel compañero ayuda con trabajos de química avanzada.",
+            "El boxeador azteca fue muy querido en Japón por su juventud.",
+            "Fabricamos exquisitas joyas de zinc y plata muy baratas.",
+            "Los niños jugaron en el parque con globos de colores brillantes.",
+        ]);
+        
+        // French sentences
+        sentences.insert("fr".to_string(), vec![
+            "Portez ce vieux whisky au juge blond qui fume.",
+            "Monsieur Jack, vous dactylographiez bien mieux que votre ami Wolf.",
+            "Le cœur déçu mais l'âme plutôt naïve, Louÿs rêva de crapaüter en canoë.",
+            "Voix ambiguë d'un cœur qui au zéphyr préfère les jattes de kiwi.",
+            "Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus.",
+            "Buvez de ce whisky que le patron juge fameux.",
+            "Où dînez-vous? Chez Rémy, Julien, Jacques ou François?",
+            "L'île exiguë où l'obèse jury mûr fête l'haï volé âne qui bâille.",
+            "Quiz: Portez ce vieux whisky au juge blond qui fume sur l'île.",
+            "Voyez le brick géant que j'examine près du wharf.",
+            "Zut! Un clown gai profita quand je buvais du whisky et mangeais.",
+            "Une fête exquise chez Rémy: vin, jazz, rock'n'roll et bœuf grillé.",
+        ]);
 
         TypingGame {
             sentences,
+            current_language: "en".to_string(),  // Default to English
             current_sentence: String::new(),
             start_time: None,
             end_time: None,
@@ -76,10 +113,34 @@ impl TypingGame {
     #[wasm_bindgen]
     pub fn get_random_sentence(&mut self) -> String {
         let mut rng = SmallRng::from_entropy();
-        let sentence = self.sentences.choose(&mut rng).unwrap().to_string();
+        let language_sentences = self.sentences.get(&self.current_language)
+            .unwrap_or(self.sentences.get("en").unwrap()); // Fallback to English
+        let sentence = language_sentences.choose(&mut rng).unwrap().to_string();
         self.current_sentence = sentence.clone();
         self.reset_game();
         sentence
+    }
+
+    #[wasm_bindgen]
+    pub fn set_language(&mut self, language_code: &str) {
+        // Validate language code
+        if self.sentences.contains_key(language_code) {
+            self.current_language = language_code.to_string();
+            console_log!("Language set to: {}", language_code);
+        } else {
+            console_log!("Warning: Language '{}' not supported, using default (en)", language_code);
+            self.current_language = "en".to_string();
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn get_current_language(&self) -> String {
+        self.current_language.clone()
+    }
+
+    #[wasm_bindgen]
+    pub fn get_supported_languages(&self) -> Vec<String> {
+        self.sentences.keys().cloned().collect()
     }
 
     #[wasm_bindgen]
@@ -159,11 +220,9 @@ impl TypingGame {
             self.end_game();
         }
 
-        // Check if the sentence is completed
-        let is_complete = typed_text == self.current_sentence;
-        if is_complete && self.is_active {
-            self.end_game();
-        }
+        // Check if the sentence is completed - but don't end game yet
+        // Let JavaScript handle the completion and end the game
+        let is_complete = self.is_sentence_complete(typed_text);
 
         // Create result object
         let mut result = HashMap::new();
@@ -174,6 +233,11 @@ impl TypingGame {
         result.insert("is_complete".to_string(), if is_complete { 1.0 } else { 0.0 });
         result.insert("is_active".to_string(), if self.is_active { 1.0 } else { 0.0 });
         result.insert("time_expired".to_string(), if time_expired { 1.0 } else { 0.0 });
+        result.insert("sentence_complete".to_string(), if is_complete { 1.0 } else { 0.0 });
+
+        // Debug logging
+        console_log!("Rust update_progress: typed_len={}, sentence_len={}, is_complete={}, is_active={}", 
+                     typed_text.len(), self.current_sentence.len(), is_complete, self.is_active);
 
         serde_wasm_bindgen::to_value(&result).unwrap()
     }
@@ -274,6 +338,11 @@ impl TypingGame {
     #[wasm_bindgen]
     pub fn is_time_expired(&self) -> bool {
         self.get_remaining_time() <= 0.0 && self.start_time.is_some()
+    }
+
+    #[wasm_bindgen]
+    pub fn is_sentence_complete(&self, typed_text: &str) -> bool {
+        typed_text.len() >= self.current_sentence.len()
     }
 
     #[wasm_bindgen]

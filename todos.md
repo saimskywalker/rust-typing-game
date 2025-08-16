@@ -7,7 +7,7 @@
 - [ ] **T-010** [FEATURE] [HIGH] Implement language selection interface with flag icons | Created: 2025-08-15 | **Depends on**: T-015
 - [x] **T-011** [FEATURE] [HIGH] Add timer duration selection (1, 2, 3, 5 minutes) | Created: 2025-08-15 | Completed: 2025-08-15
 - [x] **T-012** [FEATURE] [HIGH] Build animated 5-second pre-game countdown screen | Created: 2025-08-15 | Completed: 2025-08-15
-- [ ] **T-013** [FEATURE] [HIGH] Create "Time's Up" transition screen with clear messaging | Created: 2025-08-15
+- [x] **T-013** [FEATURE] [HIGH] Create "Time's Up" transition screen with clear messaging | Created: 2025-08-15 | Completed: 2025-08-15
 - [ ] **T-014** [FEATURE] [HIGH] Design comprehensive results screen with personalized feedback | Created: 2025-08-15 | **Depends on**: T-016
 - [x] **T-008** [BUG] [HIGH] Fix auto-continue to prevent over-typing and ensure immediate sentence progression | Created: 2025-08-15 | Completed: 2025-08-15
 - [x] **T-001** [BUG] [HIGH] Implement countdown timer with configurable start time (60s default) | Created: 2025-01-14 | Completed: 2025-01-14
@@ -17,15 +17,15 @@
 - [x] **T-006** [FEATURE] [MEDIUM] Implement session-wide stats accumulation | Created: 2025-01-14 | Completed: 2025-01-14 | **Depends on**: T-004, T-005
 
 ### Medium Priority
-- [ ] **T-015** [FEATURE] [MEDIUM] Add multi-language sentence support in Rust core | Created: 2025-08-15
-- [ ] **T-016** [FEATURE] [MEDIUM] Implement recommendation engine based on performance | Created: 2025-08-15
-- [ ] **T-017** [FEATURE] [MEDIUM] Add screen transition animations and state management | Created: 2025-08-15
-- [ ] **T-018** [TASK] [MEDIUM] Create user data persistence with localStorage | Created: 2025-08-15
+- [x] **T-015** [FEATURE] [MEDIUM] Add multi-language sentence support in Rust core | Created: 2025-08-15 | Completed: 2025-08-15
+- [ ] **T-016** [FEATURE] [MEDIUM] Implement recommendation engine based on performance | Created: 2025-08-15 | Completed: 2025-08-15
+- [ ] **T-017** [FEATURE] [MEDIUM] Add screen transition animations and state management | Created: 2025-08-15 | Completed: 2025-08-15
+- [ ] **T-018** [TASK] [MEDIUM] Create user data persistence with localStorage | Created: 2025-08-15 | Completed: 2025-08-15
 - [x] **T-003** [FEATURE] [MEDIUM] Implement automatic sentence loading after completion | Created: 2025-01-14 | Completed: 2025-01-14
 
 ### Low Priority
-- [ ] **T-019** [TASK] [LOW] Add restart flow from results back to language selection | Created: 2025-08-15
-- [ ] **T-020** [TASK] [LOW] Implement keyboard shortcuts for power users | Created: 2025-08-15
+- [ ] **T-019** [TASK] [LOW] Add restart flow from results back to language selection | Created: 2025-08-15 | Completed: 2025-08-15
+- [ ] **T-020** [TASK] [LOW] Implement keyboard shortcuts for power users | Created: 2025-08-15 | Completed: 2025-08-15
 - [x] **T-007** [FEATURE] [LOW] Add game restart functionality that resets accumulated stats | Created: 2025-01-14 | Completed: 2025-01-14 | **Depends on**: T-006
 
 ## Completed Tasks
@@ -132,6 +132,29 @@
   - ✅ Added mobile responsive design for countdown screen (smaller circle, adjusted text)
   - ✅ Successfully tested countdown flow from 5 to game screen transition
   - ✅ Verified all animations work smoothly and timing is perfect (5-second duration)
+
+- [x] **T-013** [FEATURE] [HIGH] Create "Time's Up" transition screen with clear messaging | Created: 2025-08-15 | Completed: 2025-08-15
+  - ✅ Added comprehensive CSS styling for times-up screen with animations
+  - ✅ Implemented animated clock icon with shake effects
+  - ✅ Created bold gradient "Time's Up!" title with pulse animation
+  - ✅ Added personalized messaging with user name integration
+  - ✅ Implemented loading dots animation for smooth transition
+  - ✅ Added mobile responsive design for times-up screen
+  - ✅ Verified automatic progression from times-up to results screen (3 seconds)
+  - ✅ Successfully tested complete timer expiration flow
+
+- [x] **T-015** [FEATURE] [MEDIUM] Add multi-language sentence support in Rust core | Created: 2025-08-15 | Completed: 2025-08-15
+  - ✅ Redesigned Rust struct to use HashMap for language-specific sentence storage
+  - ✅ Implemented sentence collections for English, Spanish, and French languages
+  - ✅ Added comprehensive Spanish sentences with proper accent characters (ñ, é)
+  - ✅ Added authentic French sentences with special characters (ç, é, à, û)
+  - ✅ Created `set_language()`, `get_current_language()`, and `get_supported_languages()` methods
+  - ✅ Updated sentence generation to use current language with English fallback
+  - ✅ Enhanced JavaScript integration to call Rust language methods
+  - ✅ Added language setting in `initializeGame()` and `selectLanguage()` methods
+  - ✅ Successfully tested all three languages: English, Spanish, French
+  - ✅ Verified proper sentence randomization per language
+  - ✅ Confirmed special character support (ñ, é, ç, à, û) displays correctly
 
 ---
 

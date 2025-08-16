@@ -202,6 +202,11 @@ class TypingGameApp {
         this.userData.language = langCode;
         this.userData.languageName = langName;
         
+        // Update language in Rust game object
+        if (this.game) {
+            this.game.set_language(langCode);
+        }
+        
         // Auto-proceed to timer selection after brief delay
         setTimeout(() => {
             this.showScreen('timer-screen');
@@ -332,7 +337,8 @@ class TypingGameApp {
     initializeGame() {
         if (!this.game) return;
         
-        // Set timer duration
+        // Set language and timer duration
+        this.game.set_language(this.userData.language);
         this.game.set_timer_duration(this.userData.duration);
         
         // Load first sentence

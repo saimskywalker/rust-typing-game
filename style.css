@@ -1355,3 +1355,196 @@ body {
         transform: scale(1.02);
     }
 }
+
+/* Time's Up Screen */
+.times-up-container {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.times-up-animation {
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.clock-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    animation: timesUpClockShake 0.8s ease-in-out;
+    filter: drop-shadow(0 10px 20px rgba(239, 68, 68, 0.3));
+}
+
+.times-up-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 4rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, var(--error-color), var(--warning-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: timesUpTitlePulse 1.2s ease-in-out;
+    text-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+    letter-spacing: -0.02em;
+}
+
+.quick-stats {
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.quick-stats p {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+.results-transition {
+    color: var(--text-secondary) !important;
+    font-size: 1.125rem !important;
+    font-weight: 400 !important;
+}
+
+.transition-animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.loading-dots {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.loading-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    animation: timesUpDotBounce 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Time's Up Animations */
+@keyframes timesUpClockShake {
+    0%, 100% { 
+        transform: rotate(0deg) scale(1); 
+    }
+    10% { 
+        transform: rotate(-10deg) scale(1.1); 
+    }
+    20% { 
+        transform: rotate(10deg) scale(1.1); 
+    }
+    30% { 
+        transform: rotate(-10deg) scale(1.1); 
+    }
+    40% { 
+        transform: rotate(10deg) scale(1.1); 
+    }
+    50% { 
+        transform: rotate(0deg) scale(1.2); 
+    }
+    60% { 
+        transform: rotate(0deg) scale(1.1); 
+    }
+    80% { 
+        transform: rotate(0deg) scale(1.05); 
+    }
+}
+
+@keyframes timesUpTitlePulse {
+    0% { 
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    20% { 
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    40% { 
+        transform: scale(0.95);
+        opacity: 1;
+    }
+    60% { 
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% { 
+        transform: scale(0.98);
+        opacity: 1;
+    }
+    100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes timesUpDotBounce {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Mobile Responsiveness for Time's Up Screen */
+@media (max-width: 768px) {
+    .times-up-container {
+        padding: 1.5rem;
+    }
+    
+    .clock-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .times-up-title {
+        font-size: 2.5rem;
+    }
+    
+    .quick-stats p {
+        font-size: 1.125rem;
+    }
+    
+    .results-transition {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .times-up-title {
+        font-size: 2rem;
+    }
+    
+    .clock-icon {
+        font-size: 3rem;
+    }
+    
+    .quick-stats p {
+        font-size: 1rem;
+    }
+}
