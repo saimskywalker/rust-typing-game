@@ -598,6 +598,7 @@ window.clearCountdownTimer = clearCountdownTimer;
 window.startGameTimer = startGameTimer;
 window.clearGameTimer = clearGameTimer;
 window.clearTypingInput = clearTypingInput;
+window.focusTypingInput = focusTypingInput;
 
 // Debug functions
 window.testRustConnection = () => {
@@ -639,3 +640,35 @@ function resetWelcomeForm() {
     document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('selected'));
     document.querySelectorAll('.timer-option').forEach(opt => opt.classList.remove('selected'));
 }
+
+// Auto-focus typing input when game starts
+function focusTypingInput() {
+    const typingInput = document.getElementById('typing-input');
+    if (typingInput) {
+        // Small delay to ensure the screen transition is complete
+        setTimeout(() => {
+            typingInput.focus();
+            // Scroll into view in case of mobile issues
+            typingInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    }
+}
+
+// Add global keydown listener for immediate typing when game is active
+document.addEventListener('keydown', (e) => {
+    const gameScreen = document.getElementById('game-screen');
+    const typingInput = document.getElementById('typing-input');
+    
+    // Only auto-focus if game screen is active and input is not already focused
+    if (gameScreen && gameScreen.classList.contains('active') && 
+        typingInput && document.activeElement !== typingInput) {
+        
+        // Don't interfere with special keys
+        if (!e.ctrlKey && !e.altKey && !e.metaKey && 
+            e.key.length === 1 && /[a-zA-Z0-9\s.,!?'"()-]/.test(e.key)) {
+            
+            typingInput.focus();
+            // Let the event continue to be processed by the input
+        }
+    }
+});

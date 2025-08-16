@@ -381,13 +381,13 @@ input[type="text"]::placeholder, textarea::placeholder {
 .option.recommended::after {
     content: '⭐ Recommended';
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 8px;
+    right: 8px;
     background: linear-gradient(135deg, var(--sunset-orange), var(--coral-pink));
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.7rem;
     border-radius: var(--radius-full);
     box-shadow: var(--shadow-sm);
     animation: pulse 2s ease-in-out infinite;
