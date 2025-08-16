@@ -1,16 +1,27 @@
-# 🦀 Rust Typing Speed Game
+# 🦀 Type Master - Rust Typing Speed Test
 
-A modern, fast typing speed game built with Rust compiled to WebAssembly and a beautiful HTML/CSS interface. Test your typing skills with randomly generated sentences and track your WPM (Words Per Minute) and accuracy in real-time.
+A high-performance typing speed test built with **Rust** and **WebAssembly**. This project demonstrates a **Rust-dominant** web application architecture where the majority of application logic is implemented in Rust.
 
 ## ✨ Features
 
-- 🚀 **High Performance**: Core game logic written in Rust and compiled to WebAssembly
-- 🎨 **Modern UI**: Beautiful, responsive design with smooth animations
-- 📊 **Real-time Stats**: Live WPM, accuracy, and timer tracking
-- 🎯 **Visual Feedback**: Character-by-character highlighting with correct/incorrect indicators
-- 📱 **Responsive**: Works on desktop, tablet, and mobile devices
-- 🌙 **Dark Theme**: Eye-friendly dark mode design
-- ⌨️ **Keyboard Shortcuts**: ESC to reset, Ctrl+Enter for new sentence
+- **🦀 Rust-powered**: Core logic written in Rust for maximum performance
+- **⚡ WebAssembly**: Compiled to WASM for near-native speed in the browser
+- **🌍 Multi-language**: Support for English, Spanish, and French
+- **📊 Real-time metrics**: Live WPM and accuracy tracking  
+- **💾 Persistent data**: Your progress is saved locally
+- **📱 Responsive design**: Works on desktop and mobile devices
+- **🎯 Clean architecture**: Rust handles state, JavaScript handles DOM
+
+## 🏗️ Architecture Breakdown
+
+This project showcases a **Rust-dominant** web application:
+
+- **625 lines of Rust** (38% of codebase) - Core application logic
+- **239 lines of JavaScript** (15% of codebase) - Minimal DOM glue  
+- **580 lines of CSS** (35% of codebase) - Styling
+- **203 lines of HTML** (12% of codebase) - Structure
+
+The majority of application logic including game state, user persistence, calculations, and screen navigation is implemented in **Rust**.
 
 ## 🛠️ Prerequisites
 
@@ -20,30 +31,29 @@ A modern, fast typing speed game built with Rust compiled to WebAssembly and a b
 
 ## 🚀 Quick Start
 
-1. **Install wasm-pack** (if not already installed):
-   ```bash
-   cargo install wasm-pack
-   ```
+**The easiest way to get started:**
 
-2. **Build the project**:
-   ```bash
-   chmod +x build.sh
-   ./build.sh
-   ```
+```bash
+npm install
+npm run dev
+```
 
-3. **Serve the game**:
-   ```bash
-   # Using Python
-   python -m http.server 8000
-   
-   # OR using Node.js serve
-   npx serve .
-   
-   # OR using npm script
-   npm run serve
-   ```
+This will:
+- ✅ Build the Rust code to WebAssembly 
+- ✅ Start a development server on `http://localhost:5173`
+- ✅ Automatically open your browser
 
-4. **Open your browser** and navigate to `http://localhost:8000`
+**Alternative methods:**
+
+```bash
+# Manual build + serve
+chmod +x build.sh
+./build.sh
+npm run serve
+
+# Using Python (traditional)
+./build.sh && python -m http.server 5173
+```
 
 ## 📁 Project Structure
 

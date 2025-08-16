@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Dashboard Story Typer</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .dashboard-header h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--rainbow-1), var(--rainbow-2), var(--rainbow-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .dashboard-card {
+            background: var(--surface);
+            border: 3px solid var(--rainbow-2);
+            border-radius: var(--border-radius-large);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--rainbow-1);
+        }
+        
+        .dashboard-card h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--rainbow-3);
+        }
+        
+        .stat-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: var(--rainbow-1);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            border: 2px dashed var(--rainbow-2);
+            margin-top: 1rem;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--rainbow-1), var(--rainbow-5));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-hover);
+            transition: var(--transition);
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+        
+        .back-to-game {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--rainbow-2), var(--rainbow-4));
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .back-to-game:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .privacy-notice {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--rainbow-4);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>📊 Dashboard Story Typer</h1>
+            <p>Statistik pembelajaran mengetik untuk anak Indonesia</p>
+            <a href="index.html" class="back-to-game">🎮 Kembali Bermain</a>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- User Statistics -->
+            <div class="dashboard-card">
+                <h3>👤 Statistik Pengguna</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-sessions">0</div>
+                        <div class="stat-label">Total Sesi</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-time">0</div>
+                        <div class="stat-label">Menit Bermain</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="avg-wpm">0</div>
+                        <div class="stat-label">Rata-rata WPM</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="avg-accuracy">0%</div>
+                        <div class="stat-label">Akurasi</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Performance Metrics -->
+            <div class="dashboard-card">
+                <h3>⚡ Performa Aplikasi</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="app-load-time">0ms</div>
+                        <div class="stat-label">Waktu Muat</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="memory-usage">0MB</div>
+                        <div class="stat-label">Penggunaan Memori</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="error-count">0</div>
+                        <div class="stat-label">Jumlah Error</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="fps">60fps</div>
+                        <div class="stat-label">Frame Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Language Usage -->
+            <div class="dashboard-card">
+                <h3>🌍 Penggunaan Bahasa</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="indonesian-usage">0%</div>
+                        <div class="stat-label">🇮🇩 Indonesia</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="english-usage">0%</div>
+                        <div class="stat-label">🏰 English</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="spanish-usage">0%</div>
+                        <div class="stat-label">🌮 Español</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="french-usage">0%</div>
+                        <div class="stat-label">🗼 Français</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="dashboard-card">
+                <h3>📈 Aktivitas Terkini</h3>
+                <div id="recent-activities">
+                    <p>Memuat data aktivitas...</p>
+                </div>
+            </div>
+            
+            <!-- System Health -->
+            <div class="dashboard-card">
+                <h3>🛡️ Kesehatan Sistem</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="uptime">100%</div>
+                        <div class="stat-label">Waktu Aktif</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="response-time">0ms</div>
+                        <div class="stat-label">Waktu Respons</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Educational Insights -->
+            <div class="dashboard-card">
+                <h3>🎓 Wawasan Edukasi</h3>
+                <div id="educational-insights">
+                    <div class="insight">
+                        <strong>💡 Tips:</strong> Anak-anak belajar mengetik paling baik dengan kecepatan 15-25 WPM
+                    </div>
+                    <div class="insight">
+                        <strong>📚 Fakta:</strong> Latihan 10-15 menit sehari dapat meningkatkan keterampilan motorik
+                    </div>
+                    <div class="insight">
+                        <strong>🌟 Motivasi:</strong> Cerita berbahasa Indonesia membantu anak memahami budaya lokal
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="privacy-notice">
+            <strong>🔒 Privasi Anak:</strong> Semua data diproses secara anonim dan tidak menyimpan informasi pribadi. 
+            Dashboard ini hanya menampilkan statistik agregat untuk membantu meningkatkan pengalaman belajar.
+        </div>
+        
+        <button class="refresh-btn" onclick="refreshDashboard()" title="Refresh Data">
+            🔄
+        </button>
+    </div>
+    
+    <script type="module">
+        import { AnalyticsDashboard } from './monitor.js';
+        
+        let dashboard = null;
+        
+        function initDashboard() {
+            try {
+                dashboard = new AnalyticsDashboard();
+                loadDashboardData();
+                loadSystemMetrics();
+                setupRealTimeUpdates();
+            } catch (error) {
+                console.error('Dashboard initialization failed:', error);
+                showError('Gagal memuat dashboard');
+            }
+        }
+        
+        function loadDashboardData() {
+            if (!dashboard) return;
+            
+            const data = dashboard.data;
+            
+            // User Statistics
+            document.getElementById('total-sessions').textContent = data.totalSessions || 0;
+            document.getElementById('total-time').textContent = Math.round((data.totalPlayTime || 0) / 60000);
+            document.getElementById('avg-wpm').textContent = data.averageWPM || 0;
+            document.getElementById('avg-accuracy').textContent = `${data.averageAccuracy || 0}%`;
+        }
+        
+        function loadSystemMetrics() {
+            // Performance metrics
+            const performanceEntries = performance.getEntriesByType('navigation');
+            if (performanceEntries.length > 0) {
+                const loadTime = performanceEntries[0].loadEventEnd - performanceEntries[0].navigationStart;
+                document.getElementById('app-load-time').textContent = `${Math.round(loadTime)}ms`;
+            }
+            
+            // Memory usage
+            if ('memory' in performance) {
+                const memoryMB = Math.round(performance.memory.usedJSHeapSize / 1048576);
+                document.getElementById('memory-usage').textContent = `${memoryMB}MB`;
+            }
+            
+            // Get analytics from localStorage
+            const analyticsData = getAnalyticsData();
+            updateLanguageUsage(analyticsData);
+            updateRecentActivities(analyticsData);
+        }
+        
+        function getAnalyticsData() {
+            try {
+                const storedEvents = localStorage.getItem('typing_game_events');
+                return storedEvents ? JSON.parse(storedEvents) : [];
+            } catch {
+                return [];
+            }
+        }
+        
+        function updateLanguageUsage(events) {
+            const languageCount = { id: 0, en: 0, es: 0, fr: 0 };
+            const total = events.length;
+            
+            events.forEach(event => {
+                if (event.type === 'language_change' && event.data.to) {
+                    languageCount[event.data.to] = (languageCount[event.data.to] || 0) + 1;
+                }
+            });
+            
+            if (total > 0) {
+                document.getElementById('indonesian-usage').textContent = `${Math.round((languageCount.id / total) * 100)}%`;
+                document.getElementById('english-usage').textContent = `${Math.round((languageCount.en / total) * 100)}%`;
+                document.getElementById('spanish-usage').textContent = `${Math.round((languageCount.es / total) * 100)}%`;
+                document.getElementById('french-usage').textContent = `${Math.round((languageCount.fr / total) * 100)}%`;
+            }
+        }
+        
+        function updateRecentActivities(events) {
+            const recentEvents = events.slice(-5);
+            const activitiesEl = document.getElementById('recent-activities');
+            
+            if (recentEvents.length === 0) {
+                activitiesEl.innerHTML = '<p>Belum ada aktivitas terbaru</p>';
+                return;
+            }
+            
+            const activities = recentEvents.map(event => {
+                const time = new Date(event.timestamp).toLocaleTimeString('id-ID');
+                let description = '';
+                
+                switch (event.type) {
+                    case 'game_start':
+                        description = `🎮 Memulai game dalam bahasa ${event.data.language}`;
+                        break;
+                    case 'sentence_complete':
+                        description = `✅ Menyelesaikan kalimat (${event.data.accuracy}% akurasi)`;
+                        break;
+                    case 'game_end':
+                        description = `🏁 Selesai bermain (${event.data.wpm} WPM)`;
+                        break;
+                    default:
+                        description = `📊 ${event.type}`;
+                }
+                
+                return `<div class="activity-item">
+                    <span class="activity-time">${time}</span>
+                    <span class="activity-desc">${description}</span>
+                </div>`;
+            }).join('');
+            
+            activitiesEl.innerHTML = activities;
+        }
+        
+        function setupRealTimeUpdates() {
+            // Update every 30 seconds
+            setInterval(() => {
+                loadDashboardData();
+                loadSystemMetrics();
+            }, 30000);
+        }
+        
+        function showError(message) {
+            const error = document.createElement('div');
+            error.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 20px;
+                z-index: 9999;
+                font-family: 'Comic Neue', sans-serif;
+                font-weight: 600;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            `;
+            error.textContent = message;
+            
+            document.body.appendChild(error);
+            
+            setTimeout(() => error.remove(), 5000);
+        }
+        
+        // Global functions
+        window.refreshDashboard = function() {
+            document.querySelector('.refresh-btn').style.transform = 'scale(1.1) rotate(360deg)';
+            setTimeout(() => {
+                document.querySelector('.refresh-btn').style.transform = '';
+                loadDashboardData();
+                loadSystemMetrics();
+            }, 500);
+        };
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

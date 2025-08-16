@@ -5,9 +5,14 @@
   "main": "app.js",
   "scripts": {
     "build": "wasm-pack build --target web --out-dir pkg",
-    "dev": "wasm-pack build --target web --out-dir pkg && python -m http.server 8000",
-    "serve": "python -m http.server 8000",
-    "clean": "rm -rf pkg target"
+    "dev": "npm run build && npm run serve",
+    "dev:watch": "npm run build && concurrently \"npm run serve\" \"npm run watch\"",
+    "serve": "npx http-server . -p 5173 -c-1 -o",
+    "serve:8000": "npx http-server . -p 8000 -c-1 -o",
+    "serve:python": "python -m http.server 3000",
+    "watch": "nodemon --watch src --ext rs --exec \"npm run build\"",
+    "clean": "rm -rf pkg target",
+    "start": "npm run dev"
   },
   "keywords": [
     "rust",
@@ -19,6 +24,9 @@
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
-    "serve": "^14.0.0"
+    "serve": "^14.0.0",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2",
+    "http-server": "^14.1.1"
   }
 }
