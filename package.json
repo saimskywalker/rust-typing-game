@@ -4,13 +4,14 @@
   "description": "A modern typing speed game built with Rust WebAssembly",
   "main": "app.js",
   "scripts": {
-    "build": "wasm-pack build --target web --out-dir pkg",
-    "dev": "npm run build && npm run serve",
-    "dev:watch": "npm run build && concurrently \"npm run serve\" \"npm run watch\"",
+    "build": "echo 'Using pre-built WASM files - no build needed'",
+    "build:wasm": "wasm-pack build --target web --out-dir pkg",
+    "dev": "npm run serve",
+    "dev:watch": "npm run build:wasm && concurrently \"npm run serve\" \"npm run watch\"",
     "serve": "npx http-server . -p 5173 -c-1 -o",
     "serve:8000": "npx http-server . -p 8000 -c-1 -o",
     "serve:python": "python -m http.server 3000",
-    "watch": "nodemon --watch src --ext rs --exec \"npm run build\"",
+    "watch": "nodemon --watch src --ext rs --exec \"npm run build:wasm\"",
     "clean": "rm -rf pkg target",
     "start": "npm run dev"
   },
