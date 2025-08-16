@@ -189,6 +189,40 @@ impl TypingApp {
             "Anak-anak bermain layang-layang warna-warni di lapangan yang luas dan hijau."
         ]);
 
+        // Special Independence Day mode with proclamation and struggle quotes
+        sentences.insert("merdeka".to_string(), vec![
+            "Kami bangsa Indonesia dengan ini menyatakan kemerdekaan Indonesia.",
+            "Hal-hal yang mengenai pemindahan kekuasaan dan lain-lain diselenggarakan dengan cara saksama dan dalam tempo yang sesingkat-singkatnya.",
+            "Jakarta 17 Agustus 1945 atas nama bangsa Indonesia Soekarno Hatta.",
+            "Perjuangan kita belum selesai selama masih ada rakyat yang menderita.",
+            "Merdeka atau mati adalah semboyan yang mengalir dalam darah pejuang.",
+            "Berikan aku seribu orang tua niscaya akan kucabut Semeru dari akarnya.",
+            "Berikan aku sepuluh pemuda niscaya akan kuguncangkan dunia.",
+            "Jadilah kamu manusia yang pada kelahiranmu semua orang tertawa bahagia tetapi hanya kamu sendiri yang menangis.",
+            "Dan pada kematianmu semua orang menangis sedih tetapi hanya kamu sendiri yang tersenyum bahagia.",
+            "Bangsa yang besar adalah bangsa yang menghormati jasa pahlawannya.",
+            "Gantungkan cita-citamu setinggi langit ketahuilah kepribadianmu dan jadilah diri sendiri.",
+            "Jangan sekali-kali meninggalkan sejarah karena sejarah adalah guru yang paling bijaksana.",
+            "Perjuanganku lebih mudah karena mengusir penjajah tetapi perjuanganmu akan lebih sulit karena melawan bangsamu sendiri.",
+            "Apabila dalam diri seseorang masih ada rasa malu dan takut untuk berbuat kebaikan maka jaminan bagi orang tersebut adalah tidak akan bertemunya ia dengan kemajuan selangkah pun.",
+            "Kita harus memiliki keinginan yang menyala-nyala untuk merdeka.",
+            "Kemerdekaan hanya dapat dicapai dan dimiliki oleh bangsa yang jiwanya berkobar-kobar dengan tekad merdeka.",
+            "Rakyat Indonesia menuntut Indonesia merdeka.",
+            "Lebih baik mati berkalang tanah daripada hidup bercermin bangkai.",
+            "Sekali merdeka tetap merdeka.",
+            "Indonesia merdeka adalah hak segala bangsa dan oleh sebab itu penjajahan di atas dunia harus dihapuskan karena tidak sesuai dengan perikemanusiaan dan perikeadilan.",
+            "Pancasila sebagai dasar negara Indonesia adalah pedoman hidup bangsa.",
+            "Bhinneka Tunggal Ika meskipun berbeda-beda tetapi tetap satu jua.",
+            "Garuda Pancasila adalah lambang negara Republik Indonesia.",
+            "Indonesia Raya adalah lagu kebangsaan Indonesia yang menggetarkan jiwa.",
+            "Merah Putih adalah bendera pusaka yang dihormati seluruh bangsa.",
+            "Sang Saka Merah Putih berkibar dengan gagah di tiang bendera.",
+            "Dirgahayu Indonesia ke-78 tahun 2023 tetap jaya dan bermartabat.",
+            "Kemerdekaan Indonesia diproklamasikan pada tanggal 17 Agustus 1945.",
+            "Hari kemerdekaan Indonesia diperingati setiap tanggal 17 Agustus.",
+            "Upacara bendera dilaksanakan untuk mengenang jasa para pahlawan."
+        ]);
+
         let user_data = UserData {
             name: String::new(),
             language: "id".to_string(),
