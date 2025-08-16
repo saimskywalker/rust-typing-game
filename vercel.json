@@ -2,16 +2,5 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".",
   "devCommand": "npm run serve",
-  "installCommand": "npm install",
-  "headers": [
-    {
-      "source": "*.wasm",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/wasm"
-        }
-      ]
-    }
-  ]
+  "installCommand": "npm install"
 }
