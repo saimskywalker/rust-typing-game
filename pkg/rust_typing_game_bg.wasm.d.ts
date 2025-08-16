@@ -1,0 +1,36 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const __wbg_typingapp_free: (a: number, b: number) => void;
+export const typingapp_new: () => number;
+export const typingapp_initialize: (a: number) => void;
+export const typingapp_set_user_name: (a: number, b: number, c: number) => number;
+export const typingapp_set_language: (a: number, b: number, c: number, d: number, e: number) => void;
+export const typingapp_set_duration: (a: number, b: number) => void;
+export const typingapp_proceed_to_language: (a: number) => void;
+export const typingapp_proceed_to_timer: (a: number) => void;
+export const typingapp_start_countdown: (a: number) => void;
+export const typingapp_countdown_tick: (a: number) => void;
+export const typingapp_start_game_session: (a: number) => void;
+export const typingapp_generate_new_sentence: (a: number) => [number, number];
+export const typingapp_start_typing: (a: number) => void;
+export const typingapp_update_typing_progress: (a: number, b: number, c: number) => any;
+export const typingapp_show_results: (a: number) => void;
+export const typingapp_restart_game: (a: number) => void;
+export const typingapp_change_settings: (a: number) => void;
+export const typingapp_new_session: (a: number) => void;
+export const typingapp_user_name: (a: number) => [number, number];
+export const typingapp_current_language: (a: number) => [number, number];
+export const typingapp_current_sentence: (a: number) => [number, number];
+export const typingapp_session_wpm: (a: number) => number;
+export const typingapp_session_accuracy: (a: number) => number;
+export const typingapp_remaining_time: (a: number) => number;
+export const typingapp_test_connection: (a: number) => [number, number];
+export const main: () => void;
+export const __wbindgen_exn_store: (a: number) => void;
+export const __externref_table_alloc: () => number;
+export const __wbindgen_export_2: WebAssembly.Table;
+export const __wbindgen_malloc: (a: number, b: number) => number;
+export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+export const __wbindgen_free: (a: number, b: number, c: number) => void;
+export const __wbindgen_start: () => void;

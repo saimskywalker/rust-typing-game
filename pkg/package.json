@@ -1,0 +1,21 @@
+{
+  "name": "rust-typing-game",
+  "type": "module",
+  "description": "A high-performance typing speed test built with Rust and WebAssembly",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/rust-typing-game"
+  },
+  "files": [
+    "rust_typing_game_bg.wasm",
+    "rust_typing_game.js",
+    "rust_typing_game.d.ts"
+  ],
+  "main": "rust_typing_game.js",
+  "types": "rust_typing_game.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
