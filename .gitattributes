@@ -2,11 +2,22 @@
 *.sh linguist-language=Shell
 *.toml linguist-language=TOML
 *.rs linguist-language=Rust
+*.js linguist-language=JavaScript
+*.html linguist-language=HTML
+*.css linguist-language=CSS
 
 # Mark generated files to exclude from language stats
 pkg/* linguist-generated=true
 target/* linguist-generated=true
 node_modules/* linguist-vendored=true
 
+# Mark web assets as documentation to prioritize Rust
+*.js linguist-documentation=true
+*.html linguist-documentation=true
+*.css linguist-documentation=true
+dashboard.html linguist-documentation=true
+index.html linguist-documentation=true
+
 # Ensure Rust is properly detected as main language
 src/*.rs linguist-language=Rust
+Cargo.toml linguist-language=TOML
