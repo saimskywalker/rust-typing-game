@@ -1,0 +1,12 @@
+# Override GitHub language detection for Rust typing game portfolio
+*.sh linguist-language=Shell
+*.toml linguist-language=TOML
+*.rs linguist-language=Rust
+
+# Mark generated files to exclude from language stats
+pkg/* linguist-generated=true
+target/* linguist-generated=true
+node_modules/* linguist-vendored=true
+
+# Ensure Rust is properly detected as main language
+src/*.rs linguist-language=Rust
